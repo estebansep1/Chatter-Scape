@@ -1,0 +1,21 @@
+# Node modules
+/frontend/node_modules/
+/backend/node_modules/
+
+# Environment files
+.env
+
+# Build directories
+/frontend/build/
+/backend/dist/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+.vscode/
