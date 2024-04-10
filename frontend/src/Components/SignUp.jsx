@@ -2,8 +2,9 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React from "react";
 import { motion } from "framer-motion";
-import { FiArrowUpRight, FiStar } from "react-icons/fi";
+import { FiArrowUpRight } from "react-icons/fi";
 import '../App.css'
+import exampleImage from '../images/signup.jpg';
 
 export const SlideInAuth = () => {
   console.log("Rendering SlideInAuth");
@@ -35,7 +36,7 @@ const Form = () => {
           Create your account
         </motion.h1>
         <motion.p variants={primaryVariants} className="mb-8 text-center">
-          A simple and easy to use platform to talk to whoever!
+        Connect, collaborate, and celebrate from anywhere with ChatterScape.
         </motion.p>
 
         <form onSubmit={(e) => e.preventDefault()} className="w-full">
@@ -130,7 +131,7 @@ const SupplementalContent = () => {
     <div className="group sticky top-4 m-4 h-80 overflow-hidden rounded-3xl rounded-tl-[4rem] bg-slate-950 md:h-[calc(100vh_-_2rem)]">
       <img
         alt="An example image"
-        src="/imgs/abstract/18.jpg"
+        src={exampleImage}
         className="h-full w-full bg-white object-cover transition-all duration-500 group-hover:scale-105 group-hover:opacity-50"
       />
 
@@ -151,32 +152,24 @@ const SupplementalContent = () => {
           className="mb-2 text-3xl font-semibold leading-[1.25] text-white lg:text-4xl"
           variants={primaryVariants}
         >
-          Connecting Designers
+          Where Conversations
           <br />
-          with Opportunities
+          come Alive
         </motion.h2>
         <motion.p
           variants={primaryVariants}
           className="mb-6 max-w-md text-sm text-slate-300"
         >
-          Bloop is the home of makers, making amazing things, and getting paid.
-          Find your dream job with us.
+            Dive into a world where your words create connections, explore communities that share your interests, and forge friendships that go beyond the digital realm. 
+            Welcome to ChatterScape – your space to chat, share, and belong.
         </motion.p>
         <div className="flex items-center gap-4">
           <div>
-            <motion.div variants={primaryVariants} className="flex gap-0.5">
-              <FiStar className="fill-yellow-300 text-sm text-yellow-300" />
-              <FiStar className="fill-yellow-300 text-sm text-yellow-300" />
-              <FiStar className="fill-yellow-300 text-sm text-yellow-300" />
-              <FiStar className="fill-yellow-300 text-sm text-yellow-300" />
-              <FiStar className="fill-yellow-300 text-sm text-yellow-300" />
-              <span className="ml-2 text-sm text-white">5.0</span>
-            </motion.div>
             <motion.p
               variants={primaryVariants}
               className="text-xs text-slate-300"
             >
-              from over 100,000 reviews
+              Discover endless topics and start meaningful conversations on ChatterScape.
             </motion.p>
           </div>
         </div>
