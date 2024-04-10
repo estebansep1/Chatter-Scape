@@ -35,7 +35,7 @@ const Form = () => {
           Create your account
         </motion.h1>
         <motion.p variants={primaryVariants} className="mb-8 text-center">
-          Try it free for 30 days, no CC required
+          A simple and easy to use platform to talk to whoever!
         </motion.p>
 
         <form onSubmit={(e) => e.preventDefault()} className="w-full">
@@ -163,38 +163,6 @@ const SupplementalContent = () => {
           Find your dream job with us.
         </motion.p>
         <div className="flex items-center gap-4">
-          <div className="flex items-center">
-            <motion.img
-              variants={avatarVariants}
-              className="h-8 w-8 rounded-full border-[1px] border-slate-100 object-cover shadow-inner"
-              alt="A placeholder testimonial image"
-              src="/imgs/head-shots/1.jpg"
-            />
-            <motion.img
-              variants={avatarVariants}
-              className="-ml-4 h-8 w-8 rounded-full border-[1px] border-slate-100 object-cover shadow-inner"
-              alt="A placeholder testimonial image"
-              src="/imgs/head-shots/2.jpg"
-            />
-            <motion.img
-              variants={avatarVariants}
-              className="-ml-4 h-8 w-8 rounded-full border-[1px] border-slate-100 object-cover shadow-inner"
-              alt="A placeholder testimonial image"
-              src="/imgs/head-shots/3.jpg"
-            />
-            <motion.img
-              variants={avatarVariants}
-              className="-ml-4 h-8 w-8 rounded-full border-[1px] border-slate-100 object-cover shadow-inner"
-              alt="A placeholder testimonial image"
-              src="/imgs/head-shots/4.jpg"
-            />
-            <motion.img
-              variants={avatarVariants}
-              className="-ml-4 h-8 w-8 rounded-full border-[1px] border-slate-100 object-cover shadow-inner"
-              alt="A placeholder testimonial image"
-              src="/imgs/head-shots/6.jpg"
-            />
-          </div>
           <div>
             <motion.div variants={primaryVariants} className="flex gap-0.5">
               <FiStar className="fill-yellow-300 text-sm text-yellow-300" />
@@ -247,17 +215,6 @@ const primaryVariants = {
   },
   animate: {
     y: 0,
-    opacity: 1,
-  },
-};
-
-const avatarVariants = {
-  initial: {
-    x: 10,
-    opacity: 0,
-  },
-  animate: {
-    x: 0,
     opacity: 1,
   },
 };
