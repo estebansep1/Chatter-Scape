@@ -93,6 +93,7 @@ const Form = () => {
             <input
               id="username-input"
               type="text"
+              placeholder="Enter username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full md:w-96 rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
@@ -107,6 +108,7 @@ const Form = () => {
             <input
               id="password-input"
               type="password"
+              placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
@@ -120,6 +122,7 @@ const Form = () => {
             <input
               id="rt-password-input"
               type="password"
+              placeholder="Please retype your password"
               value={retypePassword}
               onChange={(e) => setRetypePassword(e.target.value)}
               className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
