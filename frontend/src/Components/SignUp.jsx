@@ -7,7 +7,6 @@ import "../App.css";
 import exampleImage from "../images/signup.jpg";
 
 export const SlideInAuth = () => {
-  console.log("Rendering SlideInAuth");
   return (
     <section className="grid min-h-screen grid-cols-1 bg-slate-50 md:grid-cols-[1fr,_400px] lg:grid-cols-[1fr,_600px]">
       <Logo />
@@ -18,45 +17,81 @@ export const SlideInAuth = () => {
 };
 
 const Form = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [retypePassword, setRetypePassword] = useState('');
-  const[errorMessage, setErrorMessage] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [retypePassword, setRetypePassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSignUp, setIsSignUp] = useState(true);
 
-  const handleSignup = async (e) => {
+  const handleSignin = async (e) => {
     e.preventDefault();
-    setErrorMessage({ text: '', type: '' }); 
-  
-    if (password !== retypePassword) {
-      setErrorMessage({ text: 'Passwords do not match!', type: 'error' });
-      return;
-    }
-  
+    setErrorMessage({ text: "", type: "" });
+
     const userData = {
       username,
       password,
     };
-  
+
     try {
-      const response = await fetch('http://localhost:5001/api/user/register', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5001/api/user/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
       });
-  
+
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to register');
+        throw new Error(data.message || "Failed to login");
       }
-  
-      setErrorMessage({ text: 'Registration successful!', type: 'success' });
-      setUsername('');
-      setPassword('');
-      setRetypePassword('');
+
+      setErrorMessage({ text: "Login successful!", type: "success" });
     } catch (error) {
-      setErrorMessage({ text: error.message || 'An error occurred during registration', type: 'error' });
+      setErrorMessage({
+        text: error.message || "An error occurred during login",
+        type: "error",
+      });
+    }
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setErrorMessage({ text: "", type: "" });
+
+    if (password !== retypePassword) {
+      setErrorMessage({ text: "Passwords do not match!", type: "error" });
+      return;
+    }
+
+    const userData = {
+      username,
+      password,
+    };
+
+    try {
+      const response = await fetch("http://localhost:5001/api/user/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to register");
+      }
+
+      setErrorMessage({ text: "Registration successful!", type: "success" });
+      setUsername("");
+      setPassword("");
+      setRetypePassword("");
+    } catch (error) {
+      setErrorMessage({
+        text: error.message || "An error occurred during registration",
+        type: "error",
+      });
     }
   };
 
@@ -65,8 +100,7 @@ const Form = () => {
       initial="initial"
       whileInView="animate"
       transition={{
-        staggerChildren: 0.5,
-        ease: 'easeIn'
+        staggerChildren: 0.2,
       }}
       viewport={{ once: true }}
       className="flex items-center justify-center pb-4 pt-20 md:py-20"
@@ -76,18 +110,21 @@ const Form = () => {
           variants={primaryVariants}
           className="mb-2 text-center text-4xl font-semibold"
         >
-          Create your account
+          {isSignUp ? "Create your account" : "Sign in to your account"}
         </motion.h1>
         <motion.p variants={primaryVariants} className="mb-8 text-center">
           Start messaging friends today on ChatterScape!
         </motion.p>
         <motion.form
           variants={primaryVariants}
-          onSubmit={handleSignup}
+          onSubmit={isSignUp ? handleSignup : handleSignin}
           className="w-full max-w-lg space-y-4"
         >
           <div className="mb-2 w-full">
-            <label htmlFor="username-input" className="mb-1 block text-sm font-medium">
+            <label
+              htmlFor="username-input"
+              className="mb-1 block text-sm font-medium"
+            >
               Username<span className="text-red-600">*</span>
             </label>
             <input
@@ -100,9 +137,12 @@ const Form = () => {
               required
             />
           </div>
-          
+
           <div className="mb-2 w-full">
-            <label htmlFor="password-input" className="mb-1 block text-sm font-medium">
+            <label
+              htmlFor="password-input"
+              className="mb-1 block text-sm font-medium"
+            >
               Password<span className="text-red-600">*</span>
             </label>
             <input
@@ -116,7 +156,10 @@ const Form = () => {
             />
           </div>
           <div className="mb-4 w-full">
-            <label htmlFor="rt-password-input" className="mb-1 block text-sm font-medium">
+            <label
+              htmlFor="rt-password-input"
+              className="mb-1 block text-sm font-medium"
+            >
               Re-type Password<span className="text-red-600">*</span>
             </label>
             <input
@@ -129,10 +172,37 @@ const Form = () => {
               required
             />
           </div>
-          <button type="submit" className="w-full rounded bg-indigo-600 px-4 py-2 text-center text-white font-medium transition-colors hover:bg-indigo-700">
-            Sign up
-          </button>
-          {errorMessage && <div className={`message ${errorMessage.type}`}>{errorMessage.text}</div>}
+          <motion.button
+            variants={primaryVariants}
+            whileTap={{
+              scale: 0.985,
+            }}
+            type="submit"
+            className="mb-1.5 w-full rounded bg-indigo-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-indigo-700"
+          >
+            {isSignUp ? "Sign up" : "Sign in"}
+          </motion.button>
+          <motion.p variants={primaryVariants} className="text-xs">
+            {isSignUp
+              ? "Already have an account? "
+              : "Need to create an account? "}
+            <a
+              className="text-indigo-600 underline"
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsSignUp(!isSignUp);
+                setErrorMessage({});
+              }}
+            >
+              {isSignUp ? "Sign in" : "Sign up"}
+            </a>
+          </motion.p>
+          {errorMessage && (
+            <div className={`message ${errorMessage.type}`}>
+              {errorMessage.text}
+            </div>
+          )}
         </motion.form>
       </div>
     </motion.div>
@@ -198,9 +268,9 @@ const Logo = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="50" 
+      width="50"
       height="39"
-      viewBox="0 0 37.5 30" 
+      viewBox="0 0 37.5 30"
       className="absolute left-[50%] top-4 -translate-x-[50%] fill-slate-950 md:left-4 md:-translate-x-0"
     >
       <defs>
