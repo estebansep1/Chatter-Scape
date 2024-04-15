@@ -544,3 +544,13 @@ video {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
+.message {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.message.success {
+  color: green;
+}

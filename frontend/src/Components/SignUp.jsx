@@ -21,20 +21,22 @@ const Form = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
+  const[errorMessage, setErrorMessage] = useState('');
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
+    setErrorMessage({ text: '', type: '' }); // Clear previous error message
+  
     if (password !== retypePassword) {
-      alert('Passwords do not match!');
+      setErrorMessage({ text: 'Passwords do not match!', type: 'error' });
       return;
     }
-
+  
     const userData = {
       username,
       password,
     };
-
+  
     try {
       const response = await fetch('http://localhost:5001/api/user/register', {
         method: 'POST',
@@ -43,18 +45,18 @@ const Form = () => {
         },
         body: JSON.stringify(userData)
       });
-
+  
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || 'Failed to register');
       }
-
-      alert('Registration successful!');
+  
+      setErrorMessage({ text: 'Registration successful!', type: 'success' });
       setUsername('');
       setPassword('');
       setRetypePassword('');
     } catch (error) {
-      alert(error.message);
+      setErrorMessage({ text: error.message || 'An error occurred during registration', type: 'error' });
     }
   };
 
@@ -63,12 +65,13 @@ const Form = () => {
       initial="initial"
       whileInView="animate"
       transition={{
-        staggerChildren: 0.05,
+        staggerChildren: 0.5,
+        ease: 'easeIn'
       }}
       viewport={{ once: true }}
       className="flex items-center justify-center pb-4 pt-20 md:py-20"
     >
-    <div className="mx-auto my-auto max-w-lg px-4 md:pr-0">
+      <div className="mx-auto my-auto max-w-xl px-4 md:pr-0">
         <motion.h1
           variants={primaryVariants}
           className="mb-2 text-center text-4xl font-semibold"
@@ -78,50 +81,56 @@ const Form = () => {
         <motion.p variants={primaryVariants} className="mb-8 text-center">
           Start messaging friends today on ChatterScape!
         </motion.p>
-      <form onSubmit={handleSignup} className="w-full max-w-lg space-y-4">
-        <div className="mb-2 w-full">
-          <label htmlFor="username-input" className="mb-1 block text-sm font-medium">
-            Username<span className="text-red-600">*</span>
-          </label>
-          <input
-            id="username-input"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
-            required
-          />
-        </div>
-        <div className="mb-2 w-full">
-          <label htmlFor="password-input" className="mb-1 block text-sm font-medium">
-            Password<span className="text-red-600">*</span>
-          </label>
-          <input
-            id="password-input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
-            required
-          />
-        </div>
-        <div className="mb-4 w-full">
-          <label htmlFor="rt-password-input" className="mb-1 block text-sm font-medium">
-            Re-type Password<span className="text-red-600">*</span>
-          </label>
-          <input
-            id="rt-password-input"
-            type="password"
-            value={retypePassword}
-            onChange={(e) => setRetypePassword(e.target.value)}
-            className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
-            required
-          />
-        </div>
-        <button type="submit" className="w-full rounded bg-indigo-600 px-4 py-2 text-center text-white font-medium transition-colors hover:bg-indigo-700">
-          Sign up
-        </button>
-      </form>
+        <motion.form
+          variants={primaryVariants}
+          onSubmit={handleSignup}
+          className="w-full max-w-lg space-y-4"
+        >
+          <div className="mb-2 w-full">
+            <label htmlFor="username-input" className="mb-1 block text-sm font-medium">
+              Username<span className="text-red-600">*</span>
+            </label>
+            <input
+              id="username-input"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full md:w-96 rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
+              required
+            />
+          </div>
+          
+          <div className="mb-2 w-full">
+            <label htmlFor="password-input" className="mb-1 block text-sm font-medium">
+              Password<span className="text-red-600">*</span>
+            </label>
+            <input
+              id="password-input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
+              required
+            />
+          </div>
+          <div className="mb-4 w-full">
+            <label htmlFor="rt-password-input" className="mb-1 block text-sm font-medium">
+              Re-type Password<span className="text-red-600">*</span>
+            </label>
+            <input
+              id="rt-password-input"
+              type="password"
+              value={retypePassword}
+              onChange={(e) => setRetypePassword(e.target.value)}
+              className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
+              required
+            />
+          </div>
+          <button type="submit" className="w-full rounded bg-indigo-600 px-4 py-2 text-center text-white font-medium transition-colors hover:bg-indigo-700">
+            Sign up
+          </button>
+          {errorMessage && <div className={`message ${errorMessage.type}`}>{errorMessage.text}</div>}
+        </motion.form>
       </div>
     </motion.div>
   );
