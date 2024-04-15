@@ -3,8 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
-import '../App.css'
-import exampleImage from '../images/signup.jpg';
+import "../App.css";
+import exampleImage from "../images/signup.jpg";
 
 export const SlideInAuth = () => {
   console.log("Rendering SlideInAuth");
@@ -36,7 +36,7 @@ const Form = () => {
           Create your account
         </motion.h1>
         <motion.p variants={primaryVariants} className="mb-8 text-center">
-        Connect, collaborate, and celebrate from anywhere with ChatterScape.
+          Connect, collaborate, and celebrate from anywhere with ChatterScape.
         </motion.p>
 
         <form onSubmit={(e) => e.preventDefault()} className="w-full">
@@ -91,18 +91,7 @@ const Form = () => {
           <motion.div
             variants={primaryVariants}
             className="mb-4 flex w-full items-start gap-1.5"
-          >
-            <input
-              type="checkbox"
-              id="terms-checkbox"
-              className="h-4 w-4 accent-indigo-600"
-              required
-            />
-            <label htmlFor="terms-checkbox" className="text-xs">
-              By signing up, I agree to the terms and conditions, privacy
-              policy, and cookie policy
-            </label>
-          </motion.div>
+          ></motion.div>
 
           <motion.button
             variants={primaryVariants}
@@ -160,8 +149,10 @@ const SupplementalContent = () => {
           variants={primaryVariants}
           className="mb-6 max-w-md text-sm text-slate-300"
         >
-            Dive into a world where your words create connections, explore communities that share your interests, and forge friendships that go beyond the digital realm. 
-            Welcome to ChatterScape – your space to chat, share, and belong.
+          Dive into a world where your words create connections, explore
+          communities that share your interests, and forge friendships that go
+          beyond the digital realm. Welcome to ChatterScape – your space to
+          chat, share, and belong.
         </motion.p>
         <div className="flex items-center gap-4">
           <div>
@@ -169,7 +160,8 @@ const SupplementalContent = () => {
               variants={primaryVariants}
               className="text-xs text-slate-300"
             >
-              Discover endless topics and start meaningful conversations on ChatterScape.
+              Discover endless topics and start meaningful conversations on
+              ChatterScape.
             </motion.p>
           </div>
         </div>
@@ -179,24 +171,30 @@ const SupplementalContent = () => {
 };
 
 const Logo = () => {
-  // Temp logo from https://logoipsum.com/
   return (
     <svg
-      width="50"
-      height="39"
-      viewBox="0 0 50 39"
-      fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      width="50" 
+      height="39"
+      viewBox="0 0 37.5 30" 
       className="absolute left-[50%] top-4 -translate-x-[50%] fill-slate-950 md:left-4 md:-translate-x-0"
     >
-      <path
-        d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z"
-        stopColor="#000000"
-      ></path>
-      <path
-        d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z"
-        stopColor="#000000"
-      ></path>
+      <defs>
+        <clipPath id="290b5645d1">
+          <path
+            d="M 3.265625 1.828125 L 33.75 1.828125 L 33.75 27.230469 L 3.265625 27.230469 Z M 3.265625 1.828125"
+            clip-rule="nonzero"
+          />
+        </clipPath>
+      </defs>
+      <g clip-path="url(#290b5645d1)">
+        <path
+          fill="black"
+          d="M 21.679688 19.609375 C 23.429688 19.609375 24.851562 18.183594 24.851562 16.433594 L 24.851562 5.003906 C 24.851562 3.253906 23.429688 1.828125 21.679688 1.828125 L 6.457031 1.828125 C 4.707031 1.828125 3.285156 3.253906 3.285156 5.003906 L 3.285156 16.433594 C 3.285156 18.183594 4.707031 19.609375 6.457031 19.609375 L 8.359375 19.609375 L 8.359375 22.785156 C 8.359375 23.023438 8.496094 23.246094 8.710938 23.351562 C 8.800781 23.398438 8.898438 23.421875 8.996094 23.421875 C 9.128906 23.421875 9.261719 23.375 9.375 23.292969 L 14.28125 19.609375 Z M 30.558594 5.636719 L 26.753906 5.636719 C 26.402344 5.636719 26.117188 5.921875 26.117188 6.273438 L 26.117188 16.433594 C 26.117188 18.886719 24.128906 20.878906 21.679688 20.878906 L 14.914062 20.878906 C 14.777344 20.878906 14.644531 20.925781 14.535156 21.007812 L 13.484375 21.796875 C 13.320312 21.917969 13.226562 22.109375 13.230469 22.3125 C 13.230469 22.511719 13.328125 22.703125 13.492188 22.820312 C 14.039062 23.214844 14.675781 23.421875 15.335938 23.421875 L 22.734375 23.421875 L 27.640625 27.101562 C 27.753906 27.1875 27.886719 27.230469 28.023438 27.230469 C 28.117188 27.230469 28.214844 27.207031 28.304688 27.164062 C 28.519531 27.054688 28.65625 26.835938 28.65625 26.59375 L 28.65625 23.421875 L 30.558594 23.421875 C 32.308594 23.421875 33.730469 21.996094 33.730469 20.246094 L 33.730469 8.8125 C 33.730469 7.0625 32.308594 5.636719 30.558594 5.636719 Z"
+          fill-opacity="1"
+          fill-rule="nonzero"
+        />
+      </g>
     </svg>
   );
 };
