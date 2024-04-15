@@ -19,3 +19,7 @@ Thumbs.db
 *.sublime-workspace
 *.code-workspace
 .vscode/
+
+# Misc 
+postcss.config
+tailwind.config
