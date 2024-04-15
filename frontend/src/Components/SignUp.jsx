@@ -25,7 +25,7 @@ const Form = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setErrorMessage({ text: '', type: '' }); // Clear previous error message
+    setErrorMessage({ text: '', type: '' }); 
   
     if (password !== retypePassword) {
       setErrorMessage({ text: 'Passwords do not match!', type: 'error' });
