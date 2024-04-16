@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
 import "../App.css";
 import exampleImage from "../images/signup.jpg";
+import { useNavigate } from 'react-router-dom';
 
 export const SlideInAuth = () => {
   return (
@@ -22,6 +23,7 @@ const Form = () => {
   const [retypePassword, setRetypePassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSignUp, setIsSignUp] = useState(true);
+  const navigate = useNavigate();
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -45,6 +47,9 @@ const Form = () => {
       if (!response.ok) {
         throw new Error(data.message || "Failed to login");
       }
+
+      localStorage.setItem('token', data.token);
+      navigate('/dashboard');
 
       setErrorMessage({ text: "Login successful!", type: "success" });
     } catch (error) {
