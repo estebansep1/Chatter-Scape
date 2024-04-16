@@ -155,23 +155,27 @@ const Form = () => {
               required
             />
           </div>
-          <div className="mb-4 w-full">
-            <label
-              htmlFor="rt-password-input"
-              className="mb-1 block text-sm font-medium"
-            >
-              Re-type Password<span className="text-red-600">*</span>
-            </label>
-            <input
-              id="rt-password-input"
-              type="password"
-              placeholder="Please retype your password"
-              value={retypePassword}
-              onChange={(e) => setRetypePassword(e.target.value)}
-              className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
-              required
-            />
-          </div>
+
+          {isSignUp && (
+            <div className="mb-4 w-full">
+              <label
+                htmlFor="rt-password-input"
+                className="mb-1 block text-sm font-medium"
+              >
+                Re-type Password<span className="text-red-600">*</span>
+              </label>
+              <input
+                id="rt-password-input"
+                type="password"
+                placeholder="Re-type your password"
+                value={retypePassword}
+                onChange={(e) => setRetypePassword(e.target.value)}
+                className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
+                required
+              />
+            </div>
+          )}
+
           <motion.button
             variants={primaryVariants}
             whileTap={{
