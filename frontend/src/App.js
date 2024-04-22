@@ -12,10 +12,14 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<SlideInAuth />} />
-        <Route path="/settings" element={<SettingsPage />} />
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <SettingsPage />
           </ProtectedRoute>
         } />
         <Route path="/" element={<Navigate to="/login" replace />} />

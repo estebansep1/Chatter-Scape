@@ -27,78 +27,77 @@ const Form = () => {
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    setErrorMessage({ text: "", type: "" });
-
     const userData = {
-      username,
-      password,
+        username,
+        password
     };
 
     try {
-      const response = await fetch("http://localhost:5001/api/user/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
+        const response = await fetch("http://localhost:5001/api/user/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+        });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to login");
-      }
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to login");
+        }
 
-      localStorage.setItem('token', data.token);
-      navigate('/dashboard');
+        localStorage.setItem('token', data.token);
+        navigate(data.profileCompleted ? '/dashboard' : '/settings');
 
-      setErrorMessage({ text: "Login successful!", type: "success" });
+        setErrorMessage({ text: "Login successful!", type: "success" });
     } catch (error) {
-      setErrorMessage({
-        text: error.message || "An error occurred during login",
-        type: "error",
-      });
+        setErrorMessage({
+            text: error.message || "An error occurred during login",
+            type: "error",
+        });
     }
-  };
+};
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setErrorMessage({ text: "", type: "" });
-
     if (password !== retypePassword) {
-      setErrorMessage({ text: "Passwords do not match!", type: "error" });
-      return;
+        setErrorMessage({ text: "Passwords do not match!", type: "error" });
+        return;
     }
 
     const userData = {
-      username,
-      password,
+        username,
+        password
     };
 
     try {
-      const response = await fetch("http://localhost:5001/api/user/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
+        const response = await fetch("http://localhost:5001/api/user/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+        });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to register");
-      }
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to register");
+        }
 
-      setErrorMessage({ text: "Registration successful!", type: "success" });
-      setUsername("");
-      setPassword("");
-      setRetypePassword("");
+        // Assume registration does not auto-login the user
+        setErrorMessage({ text: "Registration successful! Please log in.", type: "success" });
+        setUsername("");
+        setPassword("");
+        setRetypePassword("");
+        navigate('/login'); // Direct user to login page to login for the first time
     } catch (error) {
-      setErrorMessage({
-        text: error.message || "An error occurred during registration",
-        type: "error",
-      });
+        setErrorMessage({
+            text: error.message || "An error occurred during registration",
+            type: "error",
+        });
     }
-  };
+};
+
 
   return (
     <motion.div
