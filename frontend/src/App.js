@@ -5,12 +5,14 @@ import Dashboard from "./Components/Dashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import PageNotFound from "./Components/404";
 import './App.css';
+import SettingsPage from "./Components/SettingsPage";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<SlideInAuth />} />
+        <Route path="/settings" element={<SettingsPage />} />
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard />
