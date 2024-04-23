@@ -34,7 +34,7 @@ export default function Dashboard() {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center ml-[-80px]">
+                <div className="flex flex-shrink-0 items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="50"
