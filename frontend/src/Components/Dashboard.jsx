@@ -19,10 +19,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    navigate("/login")
-  }
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    navigate("/login");
+  };
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -139,15 +139,15 @@ export default function Dashboard() {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <button
+                            onClick={() => navigate("/settings")}
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
                           >
                             Settings
-                          </a>
+                          </button>
                         )}
                       </Menu.Item>
                       <Menu.Item>
