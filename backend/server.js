@@ -6,6 +6,7 @@ const dotenv = require('dotenv/config')
 const PORT = process.env.PORT || 5002
 const mongoose = require('mongoose')
 const authRoutes = require('./routes/authRoutes')
+const profileRoutes = require('./routes/profileRoutes')
 const jwt = require('jsonwebtoken')
 
 const app = express();
@@ -19,7 +20,8 @@ const io = new Server(server, {
 
 app.use(cors());
 app.use(express.json());
-app.use('/api/user', authRoutes)
+app.use('/api/user', authRoutes);
+app.use('/api/user', profileRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
