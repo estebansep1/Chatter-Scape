@@ -1,17 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Fragment } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
-  { name: 'Projects', href: '#', current: false },
-  { name: 'Calendar', href: '#', current: false },
-]
+  { name: "Dashboard", href: "#", current: true },
+  { name: "Team", href: "#", current: false },
+  { name: "Projects", href: "#", current: false },
+  { name: "Calendar", href: "#", current: false },
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Dashboard() {
@@ -35,24 +35,32 @@ export default function Dashboard() {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center ml-[-80px]">
-                <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="50"
-              zoomAndPan="magnify"
-              viewBox="0 0 37.5 30.000001" 
-              height="40" 
-              preserveAspectRatio="xMidYMid meet"
-                version="1.0"><defs><clipPath
-                id="701557340f"><path 
-                d="M 3.265625 1.828125 L 33.75 1.828125 L 33.75 27.230469 L 3.265625 27.230469 Z M 3.265625 1.828125 " 
-                clip-rule="nonzero"/></clipPath></defs><g 
-                clip-path="url(#701557340f)"><path 
-                fill="#3de0d2" 
-                d="M 21.679688 19.585938 C 23.429688 19.585938 24.851562 18.164062 24.851562 16.414062 L 24.851562 5 C 24.851562 3.25 23.429688 1.828125 21.679688 1.828125 L 6.457031 1.828125 C 4.707031 1.828125 3.285156 3.25 3.285156 5 L 3.285156 16.414062 C 3.285156 18.164062 4.707031 19.585938 6.457031 19.585938 L 8.359375 19.585938 L 8.359375 22.757812 C 8.359375 22.996094 8.496094 23.214844 8.710938 23.324219 C 8.800781 23.367188 8.898438 23.390625 8.996094 23.390625 C 9.128906 23.390625 9.261719 23.347656 9.375 23.265625 L 14.28125 19.585938 Z M 30.558594 5.632812 L 26.753906 5.632812 C 26.402344 5.632812 26.117188 5.917969 26.117188 6.265625 L 26.117188 16.414062 C 26.117188 18.863281 24.128906 20.855469 21.679688 20.855469 L 14.914062 20.855469 C 14.777344 20.855469 14.644531 20.898438 14.535156 20.980469 L 13.484375 21.769531 C 13.320312 21.890625 13.226562 22.082031 13.230469 22.285156 C 13.230469 22.484375 13.328125 22.675781 13.492188 22.792969 C 14.039062 23.183594 14.675781 23.390625 15.335938 23.390625 L 22.734375 23.390625 L 27.640625 27.070312 C 27.753906 27.152344 27.886719 27.195312 28.023438 27.195312 C 28.117188 27.195312 28.214844 27.171875 28.304688 27.128906 C 28.519531 27.019531 28.65625 26.800781 28.65625 26.5625 L 28.65625 23.390625 L 30.558594 23.390625 C 32.308594 23.390625 33.730469 21.96875 33.730469 20.21875 L 33.730469 8.804688 C 33.730469 7.054688 32.308594 5.632812 30.558594 5.632812 Z M 30.558594 5.632812 " 
-                fill-opacity="1" 
-                fill-rule="nonzero"/>
-                </g>
-            </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="50"
+                    zoomAndPan="magnify"
+                    viewBox="0 0 37.5 30.000001"
+                    height="40"
+                    preserveAspectRatio="xMidYMid meet"
+                    version="1.0"
+                  >
+                    <defs>
+                      <clipPath id="701557340f">
+                        <path
+                          d="M 3.265625 1.828125 L 33.75 1.828125 L 33.75 27.230469 L 3.265625 27.230469 Z M 3.265625 1.828125 "
+                          clip-rule="nonzero"
+                        />
+                      </clipPath>
+                    </defs>
+                    <g clip-path="url(#701557340f)">
+                      <path
+                        fill="#3de0d2"
+                        d="M 21.679688 19.585938 C 23.429688 19.585938 24.851562 18.164062 24.851562 16.414062 L 24.851562 5 C 24.851562 3.25 23.429688 1.828125 21.679688 1.828125 L 6.457031 1.828125 C 4.707031 1.828125 3.285156 3.25 3.285156 5 L 3.285156 16.414062 C 3.285156 18.164062 4.707031 19.585938 6.457031 19.585938 L 8.359375 19.585938 L 8.359375 22.757812 C 8.359375 22.996094 8.496094 23.214844 8.710938 23.324219 C 8.800781 23.367188 8.898438 23.390625 8.996094 23.390625 C 9.128906 23.390625 9.261719 23.347656 9.375 23.265625 L 14.28125 19.585938 Z M 30.558594 5.632812 L 26.753906 5.632812 C 26.402344 5.632812 26.117188 5.917969 26.117188 6.265625 L 26.117188 16.414062 C 26.117188 18.863281 24.128906 20.855469 21.679688 20.855469 L 14.914062 20.855469 C 14.777344 20.855469 14.644531 20.898438 14.535156 20.980469 L 13.484375 21.769531 C 13.320312 21.890625 13.226562 22.082031 13.230469 22.285156 C 13.230469 22.484375 13.328125 22.675781 13.492188 22.792969 C 14.039062 23.183594 14.675781 23.390625 15.335938 23.390625 L 22.734375 23.390625 L 27.640625 27.070312 C 27.753906 27.152344 27.886719 27.195312 28.023438 27.195312 C 28.117188 27.195312 28.214844 27.171875 28.304688 27.128906 C 28.519531 27.019531 28.65625 26.800781 28.65625 26.5625 L 28.65625 23.390625 L 30.558594 23.390625 C 32.308594 23.390625 33.730469 21.96875 33.730469 20.21875 L 33.730469 8.804688 C 33.730469 7.054688 32.308594 5.632812 30.558594 5.632812 Z M 30.558594 5.632812 "
+                        fill-opacity="1"
+                        fill-rule="nonzero"
+                      />
+                    </g>
+                  </svg>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
@@ -61,10 +69,12 @@ export default function Dashboard() {
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                          'rounded-md px-3 py-2 text-sm font-medium'
+                          item.current
+                            ? "bg-gray-900 text-white"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                          "rounded-md px-3 py-2 text-sm font-medium"
                         )}
-                        aria-current={item.current ? 'page' : undefined}
+                        aria-current={item.current ? "page" : undefined}
                       >
                         {item.name}
                       </a>
@@ -109,7 +119,10 @@ export default function Dashboard() {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
                           >
                             Your Profile
                           </a>
@@ -119,7 +132,10 @@ export default function Dashboard() {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
                           >
                             Settings
                           </a>
@@ -129,7 +145,10 @@ export default function Dashboard() {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
                           >
                             Sign out
                           </a>
@@ -150,10 +169,12 @@ export default function Dashboard() {
                   as="a"
                   href={item.href}
                   className={classNames(
-                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                    'block rounded-md px-3 py-2 text-base font-medium'
+                    item.current
+                      ? "bg-gray-900 text-white"
+                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                    "block rounded-md px-3 py-2 text-base font-medium"
                   )}
-                  aria-current={item.current ? 'page' : undefined}
+                  aria-current={item.current ? "page" : undefined}
                 >
                   {item.name}
                 </Disclosure.Button>
@@ -163,5 +184,5 @@ export default function Dashboard() {
         </>
       )}
     </Disclosure>
-  )
+  );
 }
