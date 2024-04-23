@@ -27,17 +27,12 @@ const Form = () => {
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    const userData = {
-        username,
-        password
-    };
+    const userData = { username, password };
 
     try {
         const response = await fetch("http://localhost:5001/api/user/login", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData),
         });
 
@@ -47,16 +42,16 @@ const Form = () => {
         }
 
         localStorage.setItem('token', data.token);
-        navigate(data.profileCompleted ? '/dashboard' : '/settings');
+        localStorage.setItem('userId', data.userId);
 
+        navigate(data.profileCompleted ? '/dashboard' : '/settings');
         setErrorMessage({ text: "Login successful!", type: "success" });
     } catch (error) {
-        setErrorMessage({
-            text: error.message || "An error occurred during login",
-            type: "error",
-        });
+        console.error("Login Error:", error);
+        setErrorMessage({ text: error.message || "An error occurred during login", type: "error" });
     }
 };
+
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -84,12 +79,11 @@ const Form = () => {
             throw new Error(data.message || "Failed to register");
         }
 
-        // Assume registration does not auto-login the user
         setErrorMessage({ text: "Registration successful! Please log in.", type: "success" });
         setUsername("");
         setPassword("");
         setRetypePassword("");
-        navigate('/login'); // Direct user to login page to login for the first time
+        navigate('/login');
     } catch (error) {
         setErrorMessage({
             text: error.message || "An error occurred during registration",

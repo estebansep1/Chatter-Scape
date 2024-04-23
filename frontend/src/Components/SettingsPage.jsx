@@ -1,9 +1,51 @@
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
+import { useNavigate } from 'react-router-dom';
 
 export default function SettingsPage() {
+    const navigate = useNavigate();
+
+    const handleSave = async (event) => {
+        event.preventDefault();
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+    
+        try {
+            const formData = {
+                firstName: document.getElementById('first-name').value,
+                lastName: document.getElementById('last-name').value,
+            };
+    
+            const response = await fetch("http://localhost:5001/api/user/updateProfile", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    profileData: formData
+                })
+            });
+    
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to update profile");
+            }
+    
+            navigate('/dashboard');
+        } catch (error) {
+            console.error("Failed to save profile:", error);
+        }
+    };    
+    
   return (
     <div className="container mx-auto px-4">
-    <form>
+    <form onSubmit={handleSave}>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">Profile</h2>
@@ -22,9 +64,8 @@ export default function SettingsPage() {
                     type="text"
                     name="username"
                     id="username"
-                    autoComplete="username"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="janesmith"
+                    placeholder="username"
                   />
                 </div>
               </div>
