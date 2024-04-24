@@ -26,7 +26,6 @@ const imageFilter = (req, file, cb) => {
 const upload = multer({ storage: storage, fileFilter: imageFilter });
 
 router.get('/profile', authMiddleware, async (req, res) => {
-    console.log('Accessing /api/user/profile');
     try {
         const user = await User.findById(req.user.userId);
         if (!user) {
