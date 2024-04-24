@@ -180,7 +180,7 @@ const Form = () => {
               scale: 0.985,
             }}
             type="submit"
-            className="mb-1.5 w-full rounded bg-indigo-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-indigo-700"
+            className="mb-1.5 w-full rounded bg-cyan-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-cyan-700"
           >
             {isSignUp ? "Sign up" : "Sign in"}
           </motion.button>
@@ -189,7 +189,7 @@ const Form = () => {
               ? "Already have an account? "
               : "Need to create an account? "}
             <a
-              className="text-indigo-600 underline"
+              className="text-cyan-600 underline"
               href="#"
               onClick={(e) => {
                 e.preventDefault();
