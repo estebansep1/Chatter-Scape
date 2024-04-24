@@ -167,6 +167,8 @@ export default function SettingsPage() {
                   <input
                     id="file-upload"
                     type="file"
+                    name="profilePicture" 
+                    accept="image/png, image/jpeg" 
                     className="sr-only"
                     onChange={handleProfilePicChange}
                   />
@@ -216,6 +218,7 @@ export default function SettingsPage() {
                             <input
                               id="file-cover-upload"
                               name="file-cover-upload"
+                              accept="image/png, image/jpeg"
                               type="file"
                               className="sr-only"
                               onChange={handleCoverPhotoChange}

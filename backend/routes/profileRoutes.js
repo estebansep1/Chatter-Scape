@@ -13,7 +13,14 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const imageFilter = (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+
+const upload = multer({ storage: storage, fileFilter: imageFilter });
 
 router.post("/updateProfile", upload.fields([{ name: 'profilePicture' }, { name: 'coverPhoto' }]), async (req, res) => {
     const { userId, about } = req.body;
