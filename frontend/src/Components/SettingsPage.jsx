@@ -1,14 +1,31 @@
+import React, { useState } from "react";
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 
 export default function SettingsPage() {
   const navigate = useNavigate();
+  const [profilePicPreview, setProfilePicPreview] = useState(null);
+  const [coverPhotoPreview, setCoverPhotoPreview] = useState(null);
+
+  const handleProfilePicChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setProfilePicPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleCoverPhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setCoverPhotoPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSave = async (event) => {
     event.preventDefault();
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
-    const about = document.getElementById('about').value;
+    const about = document.getElementById("about").value;
 
     if (!token) {
       navigate("/login");
@@ -20,7 +37,7 @@ export default function SettingsPage() {
     formData.append("firstName", document.getElementById("first-name").value);
     formData.append("lastName", document.getElementById("last-name").value);
     formData.append("username", document.getElementById("username").value);
-    formData.append('about', about);
+    formData.append("about", about);
 
     if (document.getElementById("file-upload").files[0]) {
       formData.append(
@@ -126,10 +143,18 @@ export default function SettingsPage() {
                   Photo
                 </label>
                 <div className="mt-2 flex items-center gap-x-3">
-                  <UserCircleIcon
-                    className="h-12 w-12 text-gray-300"
-                    aria-hidden="true"
-                  />
+                  {profilePicPreview ? (
+                    <img
+                      src={profilePicPreview}
+                      alt="Profile Preview"
+                      className="h-12 w-12 rounded-full"
+                    />
+                  ) : (
+                    <UserCircleIcon
+                      className="h-12 w-12 text-gray-300"
+                      aria-hidden="true"
+                    />
+                  )}
                   <button
                     type="button"
                     className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -139,45 +164,71 @@ export default function SettingsPage() {
                   >
                     Change Photo
                   </button>
-                  <input id="file-upload" type="file" className="sr-only" />
+                  <input
+                    id="file-upload"
+                    type="file"
+                    className="sr-only"
+                    onChange={handleProfilePicChange}
+                  />
                 </div>
-              </div>
-              <div className="col-span-full">
-                <label
-                  htmlFor="cover-photo"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Cover photo
-                </label>
-                <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                  <div className="text-center">
-                    <PhotoIcon
-                      className="mx-auto h-12 w-12 text-gray-300"
-                      aria-hidden="true"
-                    />
-                    <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                      <label
-                        onClick={() =>
-                          document.getElementById("file-cover-upload").click()
-                        }
-                        htmlFor="file-cover-upload"
-                        className="relative cursor-pointer rounded-md bg-white font-semibold text-cyan-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-cyan-600 focus-within:ring-offset-2 hover:text-cyan-500"
-                      >
-                        <span>Upload a cover photo</span>
-                        <input
-                          id="file-cover-upload"
-                          name="file-cover-upload"
-                          type="file"
-                          className="sr-only"
+                <div className="col-span-full">
+                  <label
+                    htmlFor="cover-photo"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Cover photo
+                  </label>
+                  <div className="mt-2 flex justify-center items-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 relative">
+                    <div className="text-center">
+                      {coverPhotoPreview ? (
+                        <img
+                          src={coverPhotoPreview}
+                          alt="Cover Preview"
+                          style={{ width: "100%", height: "auto" }}
                         />
-                      </label>
+                      ) : (
+                        <PhotoIcon
+                          className="mx-auto h-12 w-12 text-gray-300"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <div
+                        style={{
+                          position: "relative",
+                          height: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        className="mt-4 w-full pb-2"
+                      >
+                        <div>
+                          <label
+                            htmlFor="file-cover-upload"
+                            className="cursor-pointer rounded-md bg-white font-semibold text-cyan-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-cyan-600 focus-within:ring-offset-2 hover:text-cyan-500"
+                            onClick={() =>
+                              document
+                                .getElementById("file-cover-upload")
+                                .click()
+                            }
+                          >
+                            <span>Upload a cover photo</span>
+                            <input
+                              id="file-cover-upload"
+                              name="file-cover-upload"
+                              type="file"
+                              className="sr-only"
+                              onChange={handleCoverPhotoChange}
+                            />
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="border-b border-gray-900/10 pb-12">
             <h2 className="text-base font-semibold leading-7 text-gray-900">
               Personal Information
