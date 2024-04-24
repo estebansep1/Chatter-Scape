@@ -18,6 +18,18 @@ const io = new Server(server, {
     },
 })
 
+const fs = require('fs');
+const path = require('path');
+const uploadsDir = path.join(__dirname, 'uploads');
+
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log('Created uploads directory');
+} else {
+    console.log('Uploads directory already exists');
+}
+
+
 app.use(cors());
 app.use(express.json());
 app.use('/api/user', authRoutes);
