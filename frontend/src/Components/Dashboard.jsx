@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const navigation = [
   { name: "Dashboard", href: "#", current: true },
@@ -17,6 +18,27 @@ function classNames(...classes) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState({})
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+        try {
+            const response = await axios.get("http://localhost:5001/api/user/profile", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            setUserData({
+              ...response.data,
+              profilePicture: response.data.profilePicture ? `http://localhost:5001/uploads/${response.data.profilePicture.split('/').pop()}` : null
+            });
+        } catch (error) {
+            navigate("/login"); 
+        }
+    };
+
+    fetchUserData();
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -109,8 +131,8 @@ export default function Dashboard() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
+                        src={userData.profilePicture || "https://via.placeholder.com/256"}
+                        alt="User Profile"
                       />
                     </Menu.Button>
                   </div>

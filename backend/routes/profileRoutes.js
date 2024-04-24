@@ -2,6 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const router = express.Router();
 const path = require('path');
+const User = require('../models/user')
+const authMiddleware = require('../middleware/authMiddleware')
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -21,6 +23,20 @@ const imageFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage: storage, fileFilter: imageFilter });
+
+router.get('/profile', authMiddleware, async (req, res) => {
+    console.log('Accessing /api/user/profile');
+    try {
+        const user = await User.findById(req.user.userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json({ username: user.username, profilePicture: user.profilePicture });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 router.post("/updateProfile", upload.fields([{ name: 'profilePicture' }, { name: 'coverPhoto' }]), async (req, res) => {
     const { userId, about } = req.body;

@@ -34,6 +34,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/user', authRoutes);
 app.use('/api/user', profileRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
