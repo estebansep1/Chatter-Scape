@@ -43,6 +43,10 @@ export default function SettingsPage() {
         }
     };    
     
+    const handleCancel = () => {
+        navigate(-1);
+    }
+
   return (
     <div className="container mx-auto px-4">
     <form onSubmit={handleSave}>
@@ -165,7 +169,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
+        <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={handleCancel}>
           Cancel
         </button>
         <button
