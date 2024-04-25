@@ -30,7 +30,7 @@ const Form = () => {
     const userData = { username, password };
 
     try {
-        const response = await fetch("http://localhost:5001/api/user/login", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData),
@@ -66,7 +66,7 @@ const Form = () => {
     };
 
     try {
-        const response = await fetch("http://localhost:5001/api/user/register", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
