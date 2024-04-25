@@ -133,7 +133,7 @@ export default function SettingsPage() {
                 </p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-10">
                 <label
                   htmlFor="photo"
                   className="block text-sm font-medium leading-6 text-gray-900"
