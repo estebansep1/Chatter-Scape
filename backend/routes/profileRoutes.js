@@ -59,6 +59,7 @@ router.post("/updateProfile", upload.fields([{ name: 'profilePicture' }, { name:
         user.lastName = req.body.lastName || user.lastName;
         user.username = req.body.username || user.username;
         user.about = req.body.about || user.about;
+        user.profileCompleted = true;
         
         if (req.files['profilePicture']) {
             user.profilePicture = req.files['profilePicture'][0].path;
