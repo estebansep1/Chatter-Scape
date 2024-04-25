@@ -1,75 +1,93 @@
 import React, { useState } from "react";
+import Pica from 'pica';
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 
 export default function SettingsPage() {
+  const pica = Pica();
   const navigate = useNavigate();
   const [profilePicPreview, setProfilePicPreview] = useState(null);
   const [coverPhotoPreview, setCoverPhotoPreview] = useState(null);
+  const [resizedProfilePic, setResizedProfilePic] = useState(null);
+  const [resizedCoverPhoto, setResizedCoverPhoto] = useState(null);
 
-  const handleProfilePicChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setProfilePicPreview(URL.createObjectURL(file));
-    }
+  const resizeImage = (file, maxWidth, maxHeight) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = Math.min(maxWidth / img.width, maxHeight / img.height);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        pica.resize(img, canvas)
+          .then(resizedCanvas => pica.toBlob(resizedCanvas, file.type, 0.90))
+          .then(blob => {
+            console.log(`Resized image size: ${blob.size} bytes`);
+            URL.revokeObjectURL(img.src);
+            resolve(blob);
+          })
+          .catch(error => {
+            URL.revokeObjectURL(img.src);
+            reject(error);
+          });
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(img.src);
+        reject(new Error('Image loading error'));
+      };
+    });
   };
 
-  const handleCoverPhotoChange = (event) => {
+  const handleProfilePicChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      setCoverPhotoPreview(URL.createObjectURL(file));
+      console.log(`Original image size: ${file.size} bytes`);
+      resizeImage(file, 128, 128).then(resizedBlob => {
+        setResizedProfilePic(resizedBlob);
+        setProfilePicPreview(URL.createObjectURL(resizedBlob));
+      }).catch(console.error);
     }
   };
+  
+  const handleCoverPhotoChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log(`Original image size: ${file.size} bytes`);
+      resizeImage(file, 800, 600).then(resizedBlob => {
+        setResizedCoverPhoto(resizedBlob);
+        setCoverPhotoPreview(URL.createObjectURL(resizedBlob));
+      }).catch(console.error);
+    }
+  };
+ 
 
   const handleSave = async (event) => {
     event.preventDefault();
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-    const about = document.getElementById("about").value;
-
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
     const formData = new FormData();
-    formData.append("userId", userId);
+    formData.append("userId", localStorage.getItem("userId"));
     formData.append("firstName", document.getElementById("first-name").value);
     formData.append("lastName", document.getElementById("last-name").value);
     formData.append("username", document.getElementById("username").value);
-    formData.append("about", about);
+    formData.append("about", document.getElementById("about").value);
 
-    if (document.getElementById("file-upload").files[0]) {
-      formData.append(
-        "profilePicture",
-        document.getElementById("file-upload").files[0]
-      );
+    if (resizedProfilePic) {
+      formData.append("profilePicture", resizedProfilePic);
     }
-
-    if (document.getElementById("file-cover-upload").files[0]) {
-      formData.append(
-        "coverPhoto",
-        document.getElementById("file-cover-upload").files[0]
-      );
+    if (resizedCoverPhoto) {
+      formData.append("coverPhoto", resizedCoverPhoto);
     }
 
     try {
-      const response = await fetch(
-        "http://localhost:5001/api/user/updateProfile",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
-
+      const response = await fetch("http://localhost:5001/api/user/updateProfile", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` },
+        body: formData
+      });
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Failed to update profile");
       }
-
       navigate("/dashboard");
     } catch (error) {
       console.error("Failed to save profile:", error);
