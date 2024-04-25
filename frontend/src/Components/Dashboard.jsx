@@ -23,14 +23,14 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchUserData = async () => {
         try {
-            const response = await axios.get("http://localhost:5001/api/user/profile", {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/profile`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
             setUserData({
               ...response.data,
-              profilePicture: response.data.profilePicture ? `http://localhost:5001/uploads/${response.data.profilePicture.split('/').pop()}` : null
+              profilePicture: response.data.profilePicture ? `${process.env.REACT_APP_API_URL}/uploads/${response.data.profilePicture.split('/').pop()}` : null
             });
         } catch (error) {
             navigate("/login"); 
