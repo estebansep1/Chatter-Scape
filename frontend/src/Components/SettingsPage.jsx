@@ -81,19 +81,18 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4">
-      <form onSubmit={handleSave}>
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8">
+      <form onSubmit={handleSave} className="w-full max-w-2xl">
         <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
+          <div className="text-center">
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Profile
             </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
+            <p className="mt-2 text-center text-sm text-gray-600">
               This information will be displayed publicly so be careful what you
               share.
             </p>
-
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
               <div className="sm:col-span-4">
                 <label
                   htmlFor="username"
@@ -113,7 +112,6 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
-
               <div className="col-span-full">
                 <label
                   htmlFor="about"
@@ -135,14 +133,14 @@ export default function SettingsPage() {
                 </p>
               </div>
 
-              <div className="col-span-full">
+              <div className="space-y-4">
                 <label
                   htmlFor="photo"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Photo
                 </label>
-                <div className="mt-2 flex items-center gap-x-3">
+                <div className="flex flex-col items-center">
                   {profilePicPreview ? (
                     <img
                       src={profilePicPreview}
@@ -167,8 +165,8 @@ export default function SettingsPage() {
                   <input
                     id="file-upload"
                     type="file"
-                    name="profilePicture" 
-                    accept="image/png, image/jpeg" 
+                    name="profilePicture"
+                    accept="image/png, image/jpeg"
                     className="sr-only"
                     onChange={handleProfilePicChange}
                   />
@@ -236,10 +234,6 @@ export default function SettingsPage() {
             <h2 className="text-base font-semibold leading-7 text-gray-900">
               Personal Information
             </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
-              Use a permanent address where you can receive mail.
-            </p>
-
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-3">
                 <label
@@ -279,18 +273,17 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
-
-        <div className="mt-6 flex items-center justify-end gap-x-6">
+        <div className="flex justify-center space-x-4 pt-5">
           <button
             type="button"
-            className="text-sm font-semibold leading-6 text-gray-900"
+            className="rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             onClick={handleCancel}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="rounded-md bg-cyan-600 py-2 px-3 text-sm font-medium text-white shadow-sm hover:bg-cyan-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
           >
             Save
           </button>
