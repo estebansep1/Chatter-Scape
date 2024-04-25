@@ -2,8 +2,8 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
 
 // Register route
 router.post("/register", async (req, res) => {
@@ -44,6 +44,20 @@ router.post("/login", async (req, res) => {
         expiresIn: "1d",
     });
     res.json({ token: token, userId: user._id.toString(), profileCompleted: user.profileCompleted, message: "Login successful!" });
+});
+
+// Cheking user availabilty route
+router.post("/check-username", authMiddleware, async (req, res) => {
+    const { username } = req.body;
+    try {
+        const user = await User.findOne({ username });
+        if (user) {
+            return res.status(409).json({ message: "Username is already taken." });
+        }
+        res.status(200).json({ message: "Username is available." });
+    } catch (error) {
+        res.status(500).json({ message: "Error checking username availability" });
+    }
 });
 
 
