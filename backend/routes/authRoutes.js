@@ -33,75 +33,56 @@ router.post("/login", async (req, res) => {
   }
 
   if (user.lockUntil && user.lockUntil > Date.now()) {
+    const lockUntil = user.lockUntil;
     return res.status(403).json({
       message: "Account is locked. Please try again later.",
-      lockoutUntil: user.lockUntil.getTime(),
+      lockoutUntil: lockUntil.getTime(),
     });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    if (user.failedLoginAttempts >= 4) {
+    user.failedLoginAttempts += 1;
+
+    if (user.failedLoginAttempts >= 5 || user.timesLocked > 0) {
       user.timesLocked += 1;
       const lockDuration = calculateLockDuration(user.timesLocked);
       user.lockUntil = new Date(Date.now() + lockDuration);
-      user.failedLoginAttempts = 0;
-
-      console.log(
-        `[DEBUG] User ${
-          user.username
-        }: Locked until ${user.lockUntil.toISOString()}`
-      );
+      user.failedLoginAttempts = 0; 
+      await user.save();
+      return res.status(403).json({
+        message: "Account is locked. Please try again later.",
+        lockoutUntil: user.lockUntil.getTime(),
+      });
     } else {
-      user.failedLoginAttempts += 1;
-
-      // Check if the user's account was previously locked and if they've already attempted to log in unsuccessfully
-      if (user.timesLocked > 0) {
-        // Lock the account again after the first failed attempt
-        const lockDuration = calculateLockDuration(user.timesLocked);
-        user.lockUntil = new Date(Date.now() + lockDuration);
-        user.failedLoginAttempts = 0;
-
-        console.log(
-          `[DEBUG] User ${
-            user.username
-          }: Locked until ${user.lockUntil.toISOString()}`
-        );
-      }
+      await user.save();
+      return res.status(400).json({ message: "Invalid credentials." });
     }
-    await user.save();
-    return res.status(400).json({ message: "Invalid credentials." });
   }
 
+  // This is to Reset the counters on successful login
   user.failedLoginAttempts = 0;
   user.timesLocked = 0;
   user.lockUntil = null;
   await user.save();
 
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
-  res.json({
-    token,
-    userId: user._id.toString(),
-    profileCompleted: user.profileCompleted,
-    message: "Login successful!",
-  });
-
-  function calculateLockDuration(timesLocked) {
-    switch (timesLocked) {
-      case 1:
-        return 10 * 60 * 1000;
-      case 2:
-        return 30 * 60 * 1000;
-      case 3:
-        return 60 * 60 * 1000;
-      default:
-        return 60 * 60 * 1000;
-    }
-  }
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+  res.json({ token, userId: user._id.toString(), profileCompleted: user.profileCompleted, message: "Login successful!" });
 });
+
+function calculateLockDuration(timesLocked) {
+  switch(timesLocked) {
+    case 1:
+      return 10 * 60 * 1000; // 10 minutes
+    case 2:
+      return 30 * 60 * 1000; // 30 minutes
+    case 3:
+      return 60 * 60 * 1000; // 60 minutes
+    default:
+      return 60 * 60 * 1000; // 60 minutes for the fourth and subsequent locks
+  }
+}
 
 // Cheking username availabilty route
 router.post("/check-username", authMiddleware, async (req, res) => {
