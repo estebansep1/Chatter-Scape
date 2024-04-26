@@ -39,8 +39,10 @@ const Form = () => {
         const data = await response.json();
         if (!response.ok) {
             if (response.status === 403 && data.lockoutUntil) {
+              console.log("Lockout time (UTC):", new Date(data.lockoutUntil).toISOString());
+              console.log("Current time (UTC):", new Date().toISOString());
                 const lockoutDate = new Date(data.lockoutUntil);
-                const formattedTime = lockoutDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+                const formattedTime = lockoutDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true, hourCycle: 'h12' });
                 setErrorMessage({ text: `Account is locked until ${formattedTime}. Please try again later.`, type: "error" });
             } 
             else {
