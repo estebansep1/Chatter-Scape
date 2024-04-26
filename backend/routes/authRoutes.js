@@ -30,23 +30,61 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-        console.log("User not found");
         return res.status(400).json({ message: "Invalid credentials." });
     }
+
+    if (user.lockUntil && user.lockUntil > Date.now()) {
+    return res.status(403).json({ 
+        message: "Account is locked. Please try again later.", 
+        lockoutUntil: user.lockUntil.getTime() 
+    });
+}
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-        return res.status(400).json({ message: "Invalid credentials." });
+        if (user.timesLocked > 0) {
+            user.timesLocked += 1;
+            const lockDuration = calculateLockDuration(user.timesLocked);
+            user.lockUntil = new Date(Date.now() + lockDuration * 60 * 1000);
+            user.failedLoginAttempts = 0;
+        } else {
+            user.failedLoginAttempts += 1;
+            if (user.failedLoginAttempts >= 5) {
+                user.timesLocked += 1;
+                const lockDuration = calculateLockDuration(user.timesLocked);
+                user.lockUntil = new Date(Date.now() + lockDuration * 60 * 1000);
+                user.failedLoginAttempts = 0;
+            }
+        }
+        await user.save();
+        return res.status(400).json({ message: "Invalid credentials. If you continue to have issues, your account will be locked." });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "1d",
-    });
-    res.json({ token: token, userId: user._id.toString(), profileCompleted: user.profileCompleted, message: "Login successful!" });
+    user.failedLoginAttempts = 0;
+    user.timesLocked = 0;
+    user.lockUntil = null;
+    await user.save();
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    res.json({ token, userId: user._id.toString(), profileCompleted: user.profileCompleted, message: "Login successful!" });
+
+
+    function calculateLockDuration(timesLocked) {
+    switch(timesLocked) {
+        case 1:
+            return 10 * 60 * 1000;
+        case 2:
+            return 30 * 60 * 1000;
+        case 3:
+            return 60 * 60 * 1000;
+        default:
+            return 120 * 60 * 1000;
+    }
+}
 });
 
-// Cheking user availabilty route
+// Cheking username availabilty route
 router.post("/check-username", authMiddleware, async (req, res) => {
     const { username } = req.body;
     try {

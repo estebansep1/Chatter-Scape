@@ -9,7 +9,10 @@ const UserSchema = new mongoose.Schema({
     about: { type: String },
     profilePicture: { type: String, default: "" },
     coverPhoto: { type: String, default: "" }, 
-    profileCompleted: { type: Boolean, default: false }
+    profileCompleted: { type: Boolean, default: false },
+    failedLoginAttempts: { type: Number, default: 0 },
+    timesLocked: { type: Number, default: 0 },
+    lockUntil: { type: Date }
 }, {
     timestamps: true
 })
