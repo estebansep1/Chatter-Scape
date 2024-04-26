@@ -38,7 +38,15 @@ const Form = () => {
 
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.message || "Failed to login");
+            if (response.status === 403 && data.lockoutUntil) {
+                const lockoutDate = new Date(data.lockoutUntil);
+                const formattedTime = lockoutDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+                setErrorMessage({ text: `Account is locked until ${formattedTime}. Please try again later.`, type: "error" });
+            } 
+            else {
+                setErrorMessage({ text: data.message || "Failed to login", type: "error" });
+            }
+            return;
         }
 
         localStorage.setItem('token', data.token);
@@ -50,8 +58,7 @@ const Form = () => {
         console.error("Login Error:", error);
         setErrorMessage({ text: error.message || "An error occurred during login", type: "error" });
     }
-};
-
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
