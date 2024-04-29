@@ -234,30 +234,24 @@ export default function SettingsPage() {
   };
 
   const handleAccountDeletion = async () => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      console.error("No user id found");
-      return;
-    }
-
-    try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/user/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-
-      if (response.status === 204) {
-        localStorage.clear();
-        setIsDeactivateModalOpen(false); 
-        navigate("/login");
+  try {
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/user/deleteAccount`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       }
-    } catch (error) {
-      console.error("Error deleting the account:", error);
+    );
+
+    if (response.status === 204) {
+      localStorage.clear();
       setIsDeactivateModalOpen(false);
+      navigate("/login");
     }
-  };
+  } catch (error) {
+    console.error("Error deleting the account:", error);
+    setIsDeactivateModalOpen(false);
+  }
+};
 
   const handleDeactivateClick = () => {
     setIsDeactivateModalOpen(true);
