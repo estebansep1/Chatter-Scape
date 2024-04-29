@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
+import axios from "axios";
 import Pica from "pica";
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +16,30 @@ export default function SettingsPage() {
   const [username, setUsername] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/profile`, {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`
+  }
+});
+      const data = response.data;
+      if (data.profilePicture) {
+        setProfilePicPreview(`${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture.split('/').pop()}`);
+      }
+      if (data.coverPhoto) {
+        setCoverPhotoPreview(`${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto.split('/').pop()}`);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      navigate("/login");
+    }
+  };
+
+  fetchUserData();
+}, [navigate]);
 
   const resizeImage = (file, maxWidth, maxHeight) => {
     return new Promise((resolve, reject) => {
