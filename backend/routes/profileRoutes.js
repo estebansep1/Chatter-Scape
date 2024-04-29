@@ -31,7 +31,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        res.json({ username: user.username, profilePicture: user.profilePicture });
+        res.json({ username: user.username, profilePicture: user.profilePicture, coverPhoto: user.coverPhoto});
     } catch (error) {
         console.error('Error fetching user profile:', error);
         res.status(500).json({ message: "Internal Server Error" });
