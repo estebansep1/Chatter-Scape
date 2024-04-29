@@ -5,6 +5,7 @@ import Pica from "pica";
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import debounce from "lodash/debounce";
+import Deactivate from "./DeactivateAccount";
 
 export default function SettingsPage() {
   const pica = Pica();
@@ -19,33 +20,45 @@ export default function SettingsPage() {
   const [username, setUsername] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
-        try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/profile`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            });
-            const data = response.data;
-            setFirstName(data.firstName);
-            setLastName(data.lastName);
-            setAbout(data.about);
-            if (data.profilePicture) {
-                setProfilePicPreview(`${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture.split('/').pop()}`);
-            }
-            if (data.coverPhoto) {
-                setCoverPhotoPreview(`${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto.split('/').pop()}`);
-            }
-        } catch (error) {
-            console.error("Failed to fetch user data:", error);
-            navigate("/login");
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/user/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const data = response.data;
+        setFirstName(data.firstName);
+        setLastName(data.lastName);
+        setAbout(data.about);
+        if (data.profilePicture) {
+          setProfilePicPreview(
+            `${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture
+              .split("/")
+              .pop()}`
+          );
         }
+        if (data.coverPhoto) {
+          setCoverPhotoPreview(
+            `${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto
+              .split("/")
+              .pop()}`
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        navigate("/login");
+      }
     };
 
     fetchUserData();
-}, [navigate]);
+  }, [navigate]);
 
   const resizeImage = (file, maxWidth, maxHeight) => {
     return new Promise((resolve, reject) => {
@@ -218,6 +231,40 @@ export default function SettingsPage() {
 
   const handleCancel = () => {
     navigate(-1);
+  };
+
+  const handleAccountDeletion = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("No user id found");
+      return;
+    }
+
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/user/${userId}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+
+      if (response.status === 204) {
+        localStorage.clear();
+        setIsDeactivateModalOpen(false); 
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Error deleting the account:", error);
+      setIsDeactivateModalOpen(false);
+    }
+  };
+
+  const handleDeactivateClick = () => {
+    setIsDeactivateModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsDeactivateModalOpen(false);
   };
 
   return (
@@ -442,8 +489,22 @@ export default function SettingsPage() {
           >
             Save
           </button>
+          <button
+            type="button"
+            onClick={handleDeactivateClick}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Delete Account
+          </button>
         </div>
       </form>
+      {isDeactivateModalOpen && (
+        <Deactivate
+          open={isDeactivateModalOpen}
+          setOpen={handleCloseModal}
+          onConfirm={handleAccountDeletion}
+        />
+      )}
     </div>
   );
 }
