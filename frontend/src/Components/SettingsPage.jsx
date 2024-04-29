@@ -18,28 +18,39 @@ export default function SettingsPage() {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/profile`, {
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`
-  }
-});
-      const data = response.data;
-      if (data.profilePicture) {
-        setProfilePicPreview(`${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture.split('/').pop()}`);
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/user/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const data = response.data;
+        if (data.profilePicture) {
+          setProfilePicPreview(
+            `${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture
+              .split("/")
+              .pop()}`
+          );
+        }
+        if (data.coverPhoto) {
+          setCoverPhotoPreview(
+            `${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto
+              .split("/")
+              .pop()}`
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        navigate("/login");
       }
-      if (data.coverPhoto) {
-        setCoverPhotoPreview(`${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto.split('/').pop()}`);
-      }
-    } catch (error) {
-      console.error("Failed to fetch user data:", error);
-      navigate("/login");
-    }
-  };
+    };
 
-  fetchUserData();
-}, [navigate]);
+    fetchUserData();
+  }, [navigate]);
 
   const resizeImage = (file, maxWidth, maxHeight) => {
     return new Promise((resolve, reject) => {
