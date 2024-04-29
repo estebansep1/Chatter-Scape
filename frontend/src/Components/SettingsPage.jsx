@@ -398,11 +398,7 @@ export default function SettingsPage() {
                           <label
                             htmlFor="file-cover-upload"
                             className="cursor-pointer rounded-md bg-white font-semibold text-cyan-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-cyan-600 focus-within:ring-offset-2 hover:text-cyan-500"
-                            onClick={() =>
-                              document
-                                .getElementById("file-cover-upload")
-                                .click()
-                            }
+                            
                           >
                             <span>Upload a cover photo</span>
                             <input
