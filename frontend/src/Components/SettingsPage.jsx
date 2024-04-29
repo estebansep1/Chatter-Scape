@@ -9,6 +9,9 @@ import debounce from "lodash/debounce";
 export default function SettingsPage() {
   const pica = Pica();
   const navigate = useNavigate();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [about, setAbout] = useState("");
   const [profilePicPreview, setProfilePicPreview] = useState(null);
   const [coverPhotoPreview, setCoverPhotoPreview] = useState(null);
   const [resizedProfilePic, setResizedProfilePic] = useState(null);
@@ -19,38 +22,31 @@ export default function SettingsPage() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/user/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        const data = response.data;
-        if (data.profilePicture) {
-          setProfilePicPreview(
-            `${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture
-              .split("/")
-              .pop()}`
-          );
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/profile`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            const data = response.data;
+            setFirstName(data.firstName);
+            setLastName(data.lastName);
+            setAbout(data.about);
+            setUsername(data.username);
+            if (data.profilePicture) {
+                setProfilePicPreview(`${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture.split('/').pop()}`);
+            }
+            if (data.coverPhoto) {
+                setCoverPhotoPreview(`${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto.split('/').pop()}`);
+            }
+        } catch (error) {
+            console.error("Failed to fetch user data:", error);
+            navigate("/login");
         }
-        if (data.coverPhoto) {
-          setCoverPhotoPreview(
-            `${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto
-              .split("/")
-              .pop()}`
-          );
-        }
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        navigate("/login");
-      }
     };
 
     fetchUserData();
-  }, [navigate]);
+}, [navigate]);
 
   const resizeImage = (file, maxWidth, maxHeight) => {
     return new Promise((resolve, reject) => {
@@ -280,6 +276,8 @@ export default function SettingsPage() {
                     rows={3}
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     defaultValue={""}
+                    value={about}
+                    onChange={(e) => setAbout(e.target.value)}
                   />
                 </div>
                 <p className="mt-3 text-sm leading-6 text-gray-600">
@@ -403,6 +401,8 @@ export default function SettingsPage() {
                     id="first-name"
                     autoComplete="given-name"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                   />
                 </div>
               </div>
@@ -421,6 +421,8 @@ export default function SettingsPage() {
                     id="last-name"
                     autoComplete="family-name"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                   />
                 </div>
               </div>
