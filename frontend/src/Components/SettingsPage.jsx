@@ -32,7 +32,6 @@ export default function SettingsPage() {
             setFirstName(data.firstName);
             setLastName(data.lastName);
             setAbout(data.about);
-            setUsername(data.username);
             if (data.profilePicture) {
                 setProfilePicPreview(`${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture.split('/').pop()}`);
             }
