@@ -91,4 +91,31 @@ router.post(
   }
 );
 
+router.delete("/deleteAccount", authMiddleware, async (req, res) => {
+    try {
+      const userId = req.user.userId; 
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      if (user.profilePicture) {
+        const profilePicPath = path.join(__dirname, "../uploads", path.basename(user.profilePicture));
+        fs.unlinkSync(profilePicPath);
+      }
+      if (user.coverPhoto) {
+        const coverPhotoPath = path.join(__dirname, "../uploads", path.basename(user.coverPhoto));
+        fs.unlinkSync(coverPhotoPath);
+      }
+  
+      await User.findByIdAndDelete(userId);
+  
+      res.status(204).send(); 
+    } catch (error) {
+      console.error("Error deleting user account:", error);
+      res.status(500).json({ message: "Error deleting user account" });
+    }
+  });  
+
 module.exports = router;
