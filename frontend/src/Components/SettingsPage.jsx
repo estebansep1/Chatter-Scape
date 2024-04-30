@@ -234,24 +234,23 @@ export default function SettingsPage() {
   };
 
   const handleAccountDeletion = async () => {
-  try {
-    const response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/user/deleteAccount`,
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/user/deleteAccount`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      if (response.status === 204) {
+        localStorage.clear();
+        setIsDeactivateModalOpen(false);
+        navigate("/login");
       }
-    );
-
-    if (response.status === 204) {
-      localStorage.clear();
+    } catch (error) {
+      console.error("Error deleting the account:", error);
       setIsDeactivateModalOpen(false);
-      navigate("/login");
     }
-  } catch (error) {
-    console.error("Error deleting the account:", error);
-    setIsDeactivateModalOpen(false);
-  }
-};
+  };
 
   const handleDeactivateClick = () => {
     setIsDeactivateModalOpen(true);
@@ -397,7 +396,6 @@ export default function SettingsPage() {
                           <label
                             htmlFor="file-cover-upload"
                             className="cursor-pointer rounded-md bg-white font-semibold text-cyan-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-cyan-600 focus-within:ring-offset-2 hover:text-cyan-500"
-                            
                           >
                             <span>Upload a cover photo</span>
                             <input
@@ -480,19 +478,19 @@ export default function SettingsPage() {
           </button>
         </div>
         <div className="flex justify-center pt-5">
-        <button
-          type="button"
-          onClick={handleDeactivateClick}
-          className="px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:outline-none dark:bg-red-600 dark:hover:bg-red-700"
-        >
-          Delete Account
-        </button>
+          <button
+            type="button"
+            onClick={handleDeactivateClick}
+            className="px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:outline-none dark:bg-red-600 dark:hover:bg-red-700"
+          >
+            Delete Account
+          </button>
         </div>
       </form>
       {isDeactivateModalOpen && (
         <Deactivate
-          open={isDeactivateModalOpen}
-          setOpen={handleCloseModal}
+          isOpen={isDeactivateModalOpen}
+          setIsOpen={setIsDeactivateModalOpen}
           onConfirm={handleAccountDeletion}
         />
       )}
