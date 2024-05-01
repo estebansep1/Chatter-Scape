@@ -54,6 +54,8 @@ const TiltCard = () => {
             ? `${process.env.REACT_APP_API_URL}/uploads/${response.data.profilePicture.split("/").pop()}`
             : null,
           about: response.data.about || "No about info available.",
+          firstName: response.data.firstName || "",
+          lastName: response.data.lastName || ""
         });
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -98,7 +100,8 @@ const TiltCard = () => {
               alt="Profile"
               className="h-32 w-32 rounded-full object-cover border-4 border-white"
             />
-            <h3 className="text-xl font-semibold">{user.username}</h3>
+            <h3 className="text-center">{user.username}</h3>
+            <h3 className="text-xl font-semibold">{`${user.firstName} ${user.lastName}`} {/* Displaying first and last name */}</h3>
             <p className="text-center">{user.about}</p>
           </div>
         ) : (
