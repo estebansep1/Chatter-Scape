@@ -1,6 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
-import { motion, useMotionValue, useSpring, useMotionTemplate } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useMotionTemplate,
+} from "framer-motion";
 import { FiUser } from "react-icons/fi";
 
 const ProfileCard = () => {
@@ -11,9 +16,6 @@ const ProfileCard = () => {
   );
 };
 
-const ROTATION_RANGE = 32.5;
-const HALF_ROTATION_RANGE = 32.5 / 2;
-
 const TiltCard = () => {
   const ref = useRef(null);
   const [user, setUser] = useState(null);
@@ -23,6 +25,9 @@ const TiltCard = () => {
 
   const xSpring = useSpring(x);
   const ySpring = useSpring(y);
+
+  const ROTATION_RANGE = 32.5;
+  const HALF_ROTATION_RANGE = 32.5 / 2;
 
   const transform = useMotionTemplate`rotateX(${xSpring}deg) rotateY(${ySpring}deg)`;
 
@@ -40,10 +45,14 @@ const TiltCard = () => {
         setUser({
           ...response.data,
           profilePicture: response.data.profilePicture
-            ? `${process.env.REACT_APP_API_URL}/uploads/${response.data.profilePicture.split("/").pop()}`
+            ? `${
+                process.env.REACT_APP_API_URL
+              }/uploads/${response.data.profilePicture.split("/").pop()}`
             : null,
           coverPhoto: response.data.coverPhoto
-            ? `${process.env.REACT_APP_API_URL}/uploads/${response.data.coverPhoto.split("/").pop()}`
+            ? `${
+                process.env.REACT_APP_API_URL
+              }/uploads/${response.data.coverPhoto.split("/").pop()}`
             : null,
           about: response.data.about || "No about info available.",
         });
@@ -55,22 +64,22 @@ const TiltCard = () => {
   }, []);
 
   const handleMouseMove = (e) => {
-  if (!ref.current) return;
+    if (!ref.current) return;
 
-  const rect = ref.current.getBoundingClientRect();
+    const rect = ref.current.getBoundingClientRect();
 
-  const width = rect.width;
-  const height = rect.height;
+    const width = rect.width;
+    const height = rect.height;
 
-  const mouseX = (e.clientX - rect.left) * ROTATION_RANGE;
-  const mouseY = (e.clientY - rect.top) * ROTATION_RANGE;
+    const mouseX = (e.clientX - rect.left) * ROTATION_RANGE;
+    const mouseY = (e.clientY - rect.top) * ROTATION_RANGE;
 
-  const rX = (mouseY / height - HALF_ROTATION_RANGE) * -1;
-  const rY = mouseX / width - HALF_ROTATION_RANGE;
+    const rX = (mouseY / height - HALF_ROTATION_RANGE) * -1;
+    const rY = mouseX / width - HALF_ROTATION_RANGE;
 
-  x.set(rX);
-  y.set(rY);
-};
+    x.set(rX);
+    y.set(rY);
+  };
 
   const handleMouseLeave = () => {
     x.set(0);
@@ -88,7 +97,6 @@ const TiltCard = () => {
       }}
       className="relative h-96 w-72 rounded-xl bg-gradient-to-br from-indigo-300 to-violet-300"
     >
-      
       <div
         style={{
           transform: "translateZ(75px)",
@@ -98,7 +106,7 @@ const TiltCard = () => {
       >
         {user ? (
           <>
-          <div
+            <div
               className="flex justify-center"
               style={{ transform: "translateZ(75px)" }}
             >
@@ -129,8 +137,14 @@ const TiltCard = () => {
           </>
         ) : (
           <div className="flex flex-col items-center justify-center">
-            <FiUser className="mx-auto text-4xl" style={{ transform: "translateZ(75px)" }} />
-            <p className="text-center text-2xl font-bold" style={{ transform: "translateZ(50px)" }}>
+            <FiUser
+              className="mx-auto text-4xl"
+              style={{ transform: "translateZ(75px)" }}
+            />
+            <p
+              className="text-center text-2xl font-bold"
+              style={{ transform: "translateZ(50px)" }}
+            >
               Loading...
             </p>
           </div>
