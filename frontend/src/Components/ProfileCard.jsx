@@ -6,7 +6,7 @@ import {
   useSpring,
   useMotionTemplate,
 } from "framer-motion";
-import { FiUser } from "react-icons/fi";
+import { FiUser, FiArrowLeft } from "react-icons/fi";
 
 const ProfileCard = () => {
   return (
@@ -45,14 +45,7 @@ const TiltCard = () => {
         setUser({
           ...response.data,
           profilePicture: response.data.profilePicture
-            ? `${
-                process.env.REACT_APP_API_URL
-              }/uploads/${response.data.profilePicture.split("/").pop()}`
-            : null,
-          coverPhoto: response.data.coverPhoto
-            ? `${
-                process.env.REACT_APP_API_URL
-              }/uploads/${response.data.coverPhoto.split("/").pop()}`
+            ? `${process.env.REACT_APP_API_URL}/uploads/${response.data.profilePicture.split("/").pop()}`
             : null,
           about: response.data.about || "No about info available.",
         });
@@ -67,13 +60,10 @@ const TiltCard = () => {
     if (!ref.current) return;
 
     const rect = ref.current.getBoundingClientRect();
-
     const width = rect.width;
     const height = rect.height;
-
     const mouseX = (e.clientX - rect.left) * ROTATION_RANGE;
     const mouseY = (e.clientY - rect.top) * ROTATION_RANGE;
-
     const rX = (mouseY / height - HALF_ROTATION_RANGE) * -1;
     const rY = mouseX / width - HALF_ROTATION_RANGE;
 
@@ -106,6 +96,13 @@ const TiltCard = () => {
       >
         {user ? (
           <>
+            <button
+              onClick={() => window.history.back()} // Navigate back in browser history
+              className="absolute top-3 left-3 text-indigo-500 bg-transparent hover:bg-indigo-100 rounded-full p-2"
+              style={{ transform: "translateZ(50px)" }} // Elevate the button in 3D space
+            >
+              <FiArrowLeft size={24} />
+            </button>
             <div
               className="flex justify-center"
               style={{ transform: "translateZ(75px)" }}
@@ -121,7 +118,6 @@ const TiltCard = () => {
                 }}
               />
             </div>
-
             <p
               className="text-xl font-semibold text-black mt-4"
               style={{ transform: "translateZ(50px)" }}
