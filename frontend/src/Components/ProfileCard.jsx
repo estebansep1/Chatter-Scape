@@ -100,7 +100,7 @@ const TiltCard = () => {
               alt="Profile"
               className="h-32 w-32 rounded-full object-cover border-4 border-white"
             />
-            <h3 className="text-center">{user.username}</h3>
+            <h3 className="text-center">@{user.username}</h3>
             <h3 className="text-xl font-semibold">{`${user.firstName} ${user.lastName}`} {/* Displaying first and last name */}</h3>
             <p className="text-center">{user.about}</p>
           </div>
