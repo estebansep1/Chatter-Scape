@@ -106,7 +106,7 @@ const TiltCard = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center space-y-2">
-            <FiUser className="text-4xl text-indigo-500" />
+            <FiUser className="text-4xl text-cyan-500" />
             <p className="text-lg">Loading...</p>
           </div>
         )}
