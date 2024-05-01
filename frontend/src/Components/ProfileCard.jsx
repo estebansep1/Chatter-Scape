@@ -9,12 +9,20 @@ import {
 import { FiUser, FiArrowLeft } from "react-icons/fi";
 
 const ProfileCard = () => {
-  return (
-    <div className="grid w-full h-full place-content-center bg-gradient-to-br from-indigo-500 to-violet-500 px-4 py-12 text-slate-900">
-      <TiltCard />
-    </div>
-  );
-};
+    return (
+      <div style={{
+        display: 'grid',
+        width: '100vw',
+        height: '100vh', 
+        placeContent: 'center',
+        background: 'linear-gradient(to bottom right, #667eea, #764ba2)',
+        padding: '0',
+        margin: '0'
+      }}>
+        <TiltCard />
+      </div>
+    );
+  };
 
 const TiltCard = () => {
   const ref = useRef(null);
