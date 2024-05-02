@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
 const fs = require("fs");
 const path = require("path");
 const User = require("../models/user");
@@ -100,6 +101,30 @@ router.post(
     }
   }
 );
+
+router.post("/updatePassword", authMiddleware, async (req, res) => {
+  const { userId } = req.user;
+  const { newPassword } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ message: "Error updating password" });
+  }
+});
 
 router.delete("/deleteAccount", authMiddleware, async (req, res) => {
     try {
