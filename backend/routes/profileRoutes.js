@@ -49,15 +49,25 @@ router.post(
   "/updateProfile",
   upload.fields([{ name: "profilePicture" }, { name: "coverPhoto" }]),
   async (req, res) => {
-    const { userId } = req.body;
+    const { userId, username } = req.body;
     try {
-      const User = require("../models/user");
       const user = await User.findById(userId);
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
+      } 
+
+      const re = /^[a-zA-Z0-9._-]+$/;
+      if (!re.test(username)) {
+        return res.status(400).json({ message: "Username contains invalid characters." });
       }
 
+      const existingUser = await User.findOne({ username });
+      if (existingUser && existingUser._id.toString() !== userId) {
+        return res.status(400).json({ message: "Username is already taken." });
+      }
+
+      // Update user profile
       if (req.files["profilePicture"] && user.profilePicture) {
         const oldPath = path.join(
           __dirname,
@@ -71,7 +81,7 @@ router.post(
 
       user.firstName = req.body.firstName || user.firstName;
       user.lastName = req.body.lastName || user.lastName;
-      user.username = req.body.username || user.username;
+      user.username = username;
       user.about = req.body.about || user.about;
       user.profileCompleted = true;
 
