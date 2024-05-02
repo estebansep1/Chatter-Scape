@@ -25,6 +25,21 @@ const Form = () => {
   const [isSignUp, setIsSignUp] = useState(true);
   const navigate = useNavigate();
 
+  const isValidUsername = (username) => {
+    const re = /^[a-zA-Z0-9._-]+$/;
+    return re.test(username);
+  };
+
+  const handleUsernameChange = (e) => {
+    const { value } = e.target;
+    if (!isValidUsername(value) && value !== "") {
+      setErrorMessage({ text: "Username contains invalid characters!", type: "error" });
+    } else {
+      setUsername(value);
+      setErrorMessage(""); 
+    }
+  };
+
   const handleSignin = async (e) => {
     e.preventDefault();
     const userData = { username, password };
@@ -139,7 +154,7 @@ const Form = () => {
               type="text"
               placeholder="Enter username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleUsernameChange}
               className="w-full md:w-96 rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
               required
             />
