@@ -23,6 +23,9 @@ export default function SettingsPage() {
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [usernameModified, setUsernameModified] = useState(false);
   const [initialUsername, setInitialUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -43,12 +46,16 @@ export default function SettingsPage() {
         setInitialUsername(data.username);
         if (data.profilePicture) {
           setProfilePicPreview(
-            `${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture.split("/").pop()}`
+            `${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture
+              .split("/")
+              .pop()}`
           );
         }
         if (data.coverPhoto) {
           setCoverPhotoPreview(
-            `${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto.split("/").pop()}`
+            `${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto
+              .split("/")
+              .pop()}`
           );
         }
       } catch (error) {
@@ -56,10 +63,9 @@ export default function SettingsPage() {
         navigate("/login");
       }
     };
-  
+
     fetchUserData();
   }, [navigate]);
-  
 
   const resizeImage = (file, maxWidth, maxHeight) => {
     return new Promise((resolve, reject) => {
@@ -162,7 +168,7 @@ export default function SettingsPage() {
     }
     return true;
   };
-  
+
   const checkUsernameAvailability = async (newUsername) => {
     try {
       const response = await fetch(
@@ -179,8 +185,7 @@ export default function SettingsPage() {
       const data = await response.json();
       if (!response.ok) {
         throw new Error(
-          data.message ||
-            "Username is already taken or unauthorized request."
+          data.message || "Username is already taken or unauthorized request."
         );
       }
       setSuccessMessage("Username is available!");
@@ -190,14 +195,13 @@ export default function SettingsPage() {
       setSuccessMessage("");
     }
   };
-  
+
   const handleUsernameChange = (event) => {
     const newUsername = event.target.value;
     setUsername(newUsername);
     setUsernameModified(true);
-  
-    if (newUsername !== username) {
 
+    if (newUsername !== username) {
       const isValidUsername = validateUsername(newUsername);
 
       if (isValidUsername) {
@@ -205,16 +209,15 @@ export default function SettingsPage() {
       }
     }
   };
-  
 
   const handleSave = async (event) => {
     event.preventDefault();
-  
+
     if (username !== initialUsername) {
       if (!validateUsername(username)) {
-        return; 
+        return;
       }
-  
+
       try {
         const availabilityResponse = await fetch(
           `${process.env.REACT_APP_API_URL}/api/user/check-username`,
@@ -229,7 +232,10 @@ export default function SettingsPage() {
         );
         const availabilityData = await availabilityResponse.json();
         if (!availabilityResponse.ok) {
-          setErrorMessage(availabilityData.message || "Username is already taken or unauthorized request.");
+          setErrorMessage(
+            availabilityData.message ||
+              "Username is already taken or unauthorized request."
+          );
           return; // Stop the save process if the username is not available
         }
       } catch (error) {
@@ -246,9 +252,10 @@ export default function SettingsPage() {
       formData.append("lastName", lastName);
       formData.append("username", username);
       formData.append("about", about);
-      if (resizedProfilePic) formData.append("profilePicture", resizedProfilePic);
+      if (resizedProfilePic)
+        formData.append("profilePicture", resizedProfilePic);
       if (resizedCoverPhoto) formData.append("coverPhoto", resizedCoverPhoto);
-  
+
       const updateResponse = await fetch(
         `${process.env.REACT_APP_API_URL}/api/user/updateProfile`,
         {
@@ -259,21 +266,64 @@ export default function SettingsPage() {
           body: formData,
         }
       );
-  
+
       const updateData = await updateResponse.json();
       if (!updateResponse.ok) {
         throw new Error(updateData.message || "Failed to update profile");
       }
-  
+
       navigate("/dashboard");
     } catch (error) {
       console.error("Failed to save profile:", error);
       setErrorMessage(error.message);
     }
-  };  
-  
+  };
+
   const handleCancel = () => {
     navigate(-1);
+  };
+
+  const handleNewPasswordChange = (event) => {
+    setNewPassword(event.target.value);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+  };
+
+  const handlePasswordUpdate = async (event) => {
+    event.preventDefault();
+
+    // Validate new password and confirmation
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      setSuccessMessage(""); // Clear success message
+      return;
+    }
+
+    try {
+      // Make API call to update password
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/user/updatePassword`,
+        { newPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Password update response:", response);
+      if (response.status === 200) {
+        setPasswordError("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setSuccessMessage("Password updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating password:", error);
+      setPasswordError("Failed to update password");
+      setSuccessMessage("");
+    }
   };
 
   const handleAccountDeletion = async () => {
@@ -503,6 +553,31 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
+            <div>
+              <label htmlFor="newPassword">New Password</label>
+              <input
+                type="password"
+                id="newPassword"
+                value={newPassword}
+                onChange={handleNewPasswordChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+              />
+            </div>
+            {passwordError && (
+              <div style={{ color: "red" }}>{passwordError}</div>
+            )}
+            {successMessage && (
+              <div style={{ color: "green" }}>{successMessage}</div>
+            )}
+            <button onClick={handlePasswordUpdate}>Update Password</button>
           </div>
         </div>
         <div className="flex justify-center space-x-4 pt-5">
