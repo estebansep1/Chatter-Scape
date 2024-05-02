@@ -21,6 +21,8 @@ export default function SettingsPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
+  const [usernameModified, setUsernameModified] = useState(false);
+  const [initialUsername, setInitialUsername] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -37,18 +39,16 @@ export default function SettingsPage() {
         setFirstName(data.firstName);
         setLastName(data.lastName);
         setAbout(data.about);
+        setUsername(data.username);
+        setInitialUsername(data.username);
         if (data.profilePicture) {
           setProfilePicPreview(
-            `${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture
-              .split("/")
-              .pop()}`
+            `${process.env.REACT_APP_API_URL}/uploads/${data.profilePicture.split("/").pop()}`
           );
         }
         if (data.coverPhoto) {
           setCoverPhotoPreview(
-            `${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto
-              .split("/")
-              .pop()}`
+            `${process.env.REACT_APP_API_URL}/uploads/${data.coverPhoto.split("/").pop()}`
           );
         }
       } catch (error) {
@@ -56,9 +56,10 @@ export default function SettingsPage() {
         navigate("/login");
       }
     };
-
+  
     fetchUserData();
   }, [navigate]);
+  
 
   const resizeImage = (file, maxWidth, maxHeight) => {
     return new Promise((resolve, reject) => {
@@ -152,83 +153,125 @@ export default function SettingsPage() {
     [token]
   );
 
-  const checkUsernameAvailability = useCallback(
-    (newUsername) => {
-      debouncedCheckUsernameAvailability(
-        newUsername,
-        setSuccessMessage,
-        setErrorMessage,
-        token
-      );
-    },
-    [debouncedCheckUsernameAvailability, token]
-  );
-
-  const handleUsernameChange = (event) => {
-    const newUsername = event.target.value;
-    setUsername(newUsername);
-    debouncedCheckUsernameAvailability(newUsername);
+  const validateUsername = (newUsername) => {
+    const re = /^[a-zA-Z0-9._-]+$/;
+    if (!re.test(newUsername)) {
+      setErrorMessage("Username contains invalid characters.");
+      setSuccessMessage("");
+      return false;
+    }
+    return true;
   };
-
-  const handleSave = async (event) => {
-    event.preventDefault();
-
+  
+  const checkUsernameAvailability = async (newUsername) => {
     try {
-      const newUsername = document.getElementById("username").value;
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/api/user/check-username`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ username: newUsername }),
         }
       );
-
       const data = await response.json();
       if (!response.ok) {
         throw new Error(
-          data.message || "Username is already taken or unauthorized request."
+          data.message ||
+            "Username is already taken or unauthorized request."
         );
       }
+      setSuccessMessage("Username is available!");
+      setErrorMessage("");
+    } catch (error) {
+      setErrorMessage(error.message);
+      setSuccessMessage("");
+    }
+  };
+  
+  const handleUsernameChange = (event) => {
+    const newUsername = event.target.value;
+    setUsername(newUsername);
+    setUsernameModified(true);
+  
+    if (newUsername !== username) {
 
+      const isValidUsername = validateUsername(newUsername);
+
+      if (isValidUsername) {
+        checkUsernameAvailability(newUsername);
+      }
+    }
+  };
+  
+
+  const handleSave = async (event) => {
+    event.preventDefault();
+  
+    if (username !== initialUsername) {
+      if (!validateUsername(username)) {
+        return; 
+      }
+  
+      try {
+        const availabilityResponse = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/user/check-username`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ username }),
+          }
+        );
+        const availabilityData = await availabilityResponse.json();
+        if (!availabilityResponse.ok) {
+          setErrorMessage(availabilityData.message || "Username is already taken or unauthorized request.");
+          return; // Stop the save process if the username is not available
+        }
+      } catch (error) {
+        console.error("Username availability check failed:", error);
+        setErrorMessage("Failed to check username availability.");
+        return;
+      }
+    }
+
+    try {
       const formData = new FormData();
       formData.append("userId", localStorage.getItem("userId"));
-      formData.append("firstName", document.getElementById("first-name").value);
-      formData.append("lastName", document.getElementById("last-name").value);
-      formData.append("username", newUsername);
-      formData.append("about", document.getElementById("about").value);
-
-      if (resizedProfilePic) {
-        formData.append("profilePicture", resizedProfilePic);
-      }
-      if (resizedCoverPhoto) {
-        formData.append("coverPhoto", resizedCoverPhoto);
-      }
-
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("username", username);
+      formData.append("about", about);
+      if (resizedProfilePic) formData.append("profilePicture", resizedProfilePic);
+      if (resizedCoverPhoto) formData.append("coverPhoto", resizedCoverPhoto);
+  
       const updateResponse = await fetch(
         `${process.env.REACT_APP_API_URL}/api/user/updateProfile`,
         {
           method: "POST",
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
           body: formData,
         }
       );
-
+  
       const updateData = await updateResponse.json();
       if (!updateResponse.ok) {
         throw new Error(updateData.message || "Failed to update profile");
       }
-
+  
       navigate("/dashboard");
     } catch (error) {
-      console.error("Failed to save profile:", error.message);
+      console.error("Failed to save profile:", error);
       setErrorMessage(error.message);
     }
-  };
-
+  };  
+  
   const handleCancel = () => {
     navigate(-1);
   };
