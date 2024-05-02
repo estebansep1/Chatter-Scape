@@ -6,6 +6,7 @@ import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import debounce from "lodash/debounce";
 import Deactivate from "./DeactivateAccount";
+import EncryptButton from "./PasswordBtn";
 
 export default function SettingsPage() {
   const pica = Pica();
@@ -25,7 +26,8 @@ export default function SettingsPage() {
   const [initialUsername, setInitialUsername] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccessMessage, setPasswordSuccessMessage] = useState("");
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -236,7 +238,7 @@ export default function SettingsPage() {
             availabilityData.message ||
               "Username is already taken or unauthorized request."
           );
-          return; // Stop the save process if the username is not available
+          return;
         }
       } catch (error) {
         console.error("Username availability check failed:", error);
@@ -293,36 +295,30 @@ export default function SettingsPage() {
 
   const handlePasswordUpdate = async (event) => {
     event.preventDefault();
+    setPasswordErrorMessage("");
+    setPasswordSuccessMessage("");
 
-    // Validate new password and confirmation
     if (newPassword !== confirmPassword) {
-      setPasswordError("Passwords do not match");
-      setSuccessMessage(""); // Clear success message
+      setPasswordErrorMessage("Passwords do not match");
       return;
     }
 
     try {
-      // Make API call to update password
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/user/updatePassword`,
         { newPassword },
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
-      console.log("Password update response:", response);
+
       if (response.status === 200) {
-        setPasswordError("");
-        setNewPassword("");
-        setConfirmPassword("");
-        setSuccessMessage("Password updated successfully");
+        setPasswordSuccessMessage("Password updated successfully");
+      } else {
+        setPasswordErrorMessage("Unexpected error occurred. Please try again.");
       }
     } catch (error) {
-      console.error("Error updating password:", error);
-      setPasswordError("Failed to update password");
-      setSuccessMessage("");
+      setPasswordErrorMessage("Failed to update password");
     }
   };
 
@@ -553,31 +549,54 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
-            <div>
-              <label htmlFor="newPassword">New Password</label>
-              <input
-                type="password"
-                id="newPassword"
-                value={newPassword}
-                onChange={handleNewPasswordChange}
-              />
+            <div className="bg-gray-100 p-6 shadow-sm rounded-lg mt-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Security Settings
+              </h3>
+              <div>
+                <label
+                  htmlFor="newPassword"
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                  value={newPassword}
+                  onChange={handleNewPasswordChange}
+                />
+              </div>
+              <div className="mt-4">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                />
+              </div>
+              {passwordErrorMessage && (
+                <p className="mt-2 text-sm text-red-600">
+                  {passwordErrorMessage}
+                </p>
+              )}
+              {passwordSuccessMessage && (
+                <p className="mt-2 text-sm text-green-600">
+                  {passwordSuccessMessage}
+                </p>
+              )}
+              <div className="flex justify-center mt-4">
+                <EncryptButton onClick={handlePasswordUpdate} />
+              </div>
             </div>
-            <div>
-              <label htmlFor="confirmPassword">Confirm Password</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={handleConfirmPasswordChange}
-              />
-            </div>
-            {passwordError && (
-              <div style={{ color: "red" }}>{passwordError}</div>
-            )}
-            {successMessage && (
-              <div style={{ color: "green" }}>{successMessage}</div>
-            )}
-            <button onClick={handlePasswordUpdate}>Update Password</button>
           </div>
         </div>
         <div className="flex justify-center space-x-4 pt-5">
