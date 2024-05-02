@@ -5,8 +5,17 @@ const User = require("../models/user");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 
+const validateUsername = (req, res, next) => {
+    const { username } = req.body;
+    const re = /^[a-zA-Z0-9._-]+$/;
+    if (!re.test(username)) {
+        return res.status(400).json({ message: 'Username contains invalid characters.' });
+    }
+    next();
+};
+
 // Register route
-router.post("/register", async (req, res) => {
+router.post("/register", validateUsername, async (req, res) => {
   try {
     const { username, password } = req.body;
     const existingUser = await User.findOne({ username });
@@ -24,7 +33,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Login route
-router.post("/login", async (req, res) => {
+router.post("/login", validateUsername, async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username });
 
