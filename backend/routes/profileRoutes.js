@@ -26,6 +26,12 @@ const imageFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter: imageFilter });
 
+const isValidPassword = (password) => {
+  const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$/;
+  return re.test(password);
+};
+
+
 router.get("/profile", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
@@ -105,6 +111,10 @@ router.post(
 router.post("/updatePassword", authMiddleware, async (req, res) => {
   const { userId } = req.user;
   const { newPassword } = req.body;
+
+  if (!isValidPassword(newPassword)) {
+    return res.status(400).json({ message: "Password must contain at least 8 characters, including 1 uppercase, 1 lowercase, 1 number, and 1 special character." });
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
