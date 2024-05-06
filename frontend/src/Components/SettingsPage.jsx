@@ -211,7 +211,7 @@ export default function SettingsPage() {
       }
     }
   };
-
+  
   const handleSave = async (event) => {
     event.preventDefault();
 
@@ -293,6 +293,11 @@ export default function SettingsPage() {
     setConfirmPassword(event.target.value);
   };
 
+  const isValidPassword = (password) => {
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$/;
+    return re.test(password);
+  };
+
   const handlePasswordUpdate = async (event) => {
     event.preventDefault();
     setPasswordErrorMessage("");
@@ -300,6 +305,11 @@ export default function SettingsPage() {
 
     if (newPassword !== confirmPassword) {
       setPasswordErrorMessage("Passwords do not match");
+      return;
+    }
+
+    if (!isValidPassword(newPassword)) {
+      setPasswordErrorMessage("Password must contain at least 8 characters, including 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
       return;
     }
 
