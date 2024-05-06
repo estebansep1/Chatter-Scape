@@ -3,6 +3,7 @@ import React, { useState, useCallback, useMemo, useEffect } from "react";
 import axios from "axios";
 import Pica from "pica";
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import debounce from "lodash/debounce";
 import Deactivate from "./DeactivateAccount";
@@ -28,6 +29,7 @@ export default function SettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordSuccessMessage, setPasswordSuccessMessage] = useState("");
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -211,7 +213,7 @@ export default function SettingsPage() {
       }
     }
   };
-  
+
   const handleSave = async (event) => {
     event.preventDefault();
 
@@ -294,7 +296,8 @@ export default function SettingsPage() {
   };
 
   const isValidPassword = (password) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$/;
+    const re =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$/;
     return re.test(password);
   };
 
@@ -309,7 +312,9 @@ export default function SettingsPage() {
     }
 
     if (!isValidPassword(newPassword)) {
-      setPasswordErrorMessage("Password must contain at least 8 characters, including 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
+      setPasswordErrorMessage(
+        "Password must contain at least 8 characters, including 1 uppercase, 1 lowercase, 1 number, and 1 special character."
+      );
       return;
     }
 
@@ -563,7 +568,7 @@ export default function SettingsPage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Security Settings
               </h3>
-              <div>
+              <div className="relative">
                 <label
                   htmlFor="newPassword"
                   className="block text-sm font-medium text-gray-900"
@@ -571,14 +576,35 @@ export default function SettingsPage() {
                   New Password
                 </label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="newPassword"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                   value={newPassword}
                   onChange={handleNewPasswordChange}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "0.5rem",
+                    top: 20,
+                    bottom: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "0 12px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    border: "none",
+                  }}
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-sm leading-5"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
               </div>
-              <div className="mt-4">
+              <div className="mt-4 relative">
                 <label
                   htmlFor="confirmPassword"
                   className="block text-sm font-medium text-gray-900"
@@ -586,12 +612,33 @@ export default function SettingsPage() {
                   Confirm Password
                 </label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="confirmPassword"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                   value={confirmPassword}
                   onChange={handleConfirmPasswordChange}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "0.5rem",
+                    top: 20,
+                    bottom: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "0 12px",
+                    cursor: "pointer",
+                    backgroundColor: "transparent",
+                    border: "none",
+                  }}
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-sm leading-5"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
               </div>
               {passwordErrorMessage && (
                 <p className="mt-2 text-sm text-red-600">
