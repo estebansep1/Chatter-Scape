@@ -2,10 +2,10 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { FiArrowUpRight } from "react-icons/fi";
+import { FiArrowUpRight, FiEye, FiEyeOff } from "react-icons/fi";
 import "../App.css";
 import exampleImage from "../images/signup.jpg";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export const SlideInAuth = () => {
   return (
@@ -24,6 +24,7 @@ const Form = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isSignUp, setIsSignUp] = useState(true);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const isValidUsername = (username) => {
     const re = /^[a-zA-Z0-9._-]+$/;
@@ -33,10 +34,13 @@ const Form = () => {
   const handleUsernameChange = (e) => {
     const { value } = e.target;
     if (!isValidUsername(value) && value !== "") {
-      setErrorMessage({ text: "Username contains invalid characters!", type: "error" });
+      setErrorMessage({
+        text: "Username contains invalid characters!",
+        type: "error",
+      });
     } else {
       setUsername(value);
-      setErrorMessage(""); 
+      setErrorMessage("");
     }
   };
 
@@ -45,87 +49,115 @@ const Form = () => {
     const userData = { username, password };
 
     try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userData),
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-            if (response.status === 403 && data.lockoutUntil) {
-              console.log("Lockout time (UTC):", new Date(data.lockoutUntil).toISOString());
-              console.log("Current time (UTC):", new Date().toISOString());
-                const lockoutDate = new Date(data.lockoutUntil);
-                const formattedTime = lockoutDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true, hourCycle: 'h12' });
-                setErrorMessage({ text: `Account is locked until ${formattedTime}. Please try again later.`, type: "error" });
-            } 
-            else {
-                setErrorMessage({ text: data.message || "Failed to login", type: "error" });
-            }
-            return;
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/user/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData),
         }
+      );
 
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userId', data.userId);
+      const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 403 && data.lockoutUntil) {
+          console.log(
+            "Lockout time (UTC):",
+            new Date(data.lockoutUntil).toISOString()
+          );
+          console.log("Current time (UTC):", new Date().toISOString());
+          const lockoutDate = new Date(data.lockoutUntil);
+          const formattedTime = lockoutDate.toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+            hourCycle: "h12",
+          });
+          setErrorMessage({
+            text: `Account is locked until ${formattedTime}. Please try again later.`,
+            type: "error",
+          });
+        } else {
+          setErrorMessage({
+            text: data.message || "Failed to login",
+            type: "error",
+          });
+        }
+        return;
+      }
 
-        navigate(data.profileCompleted ? '/dashboard' : '/settings');
-        setErrorMessage({ text: "Login successful!", type: "success" });
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.userId);
+
+      navigate(data.profileCompleted ? "/dashboard" : "/settings");
+      setErrorMessage({ text: "Login successful!", type: "success" });
     } catch (error) {
-        console.error("Login Error:", error);
-        setErrorMessage({ text: error.message || "An error occurred during login", type: "error" });
+      console.error("Login Error:", error);
+      setErrorMessage({
+        text: error.message || "An error occurred during login",
+        type: "error",
+      });
     }
   };
 
   const isValidPassword = (password) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$/;
+    const re =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$/;
     return re.test(password);
-  }
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
     if (password !== retypePassword) {
-        setErrorMessage({ text: "Passwords do not match!", type: "error" });
-        return;
+      setErrorMessage({ text: "Passwords do not match!", type: "error" });
+      return;
     }
 
-    if(!isValidPassword(password)) {
-      setErrorMessage({ text: "Password must contain at least 8 characters, including 1 uppercase, 1 lowercase, 1 number, and 1 special character.", type: "error" });
+    if (!isValidPassword(password)) {
+      setErrorMessage({
+        text: "Password must contain at least 8 characters, including 1 uppercase, 1 lowercase, 1 number, and 1 special character.",
+        type: "error",
+      });
       return;
     }
 
     const userData = {
-        username,
-        password
+      username,
+      password,
     };
 
     try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(userData),
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to register");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/user/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
         }
+      );
 
-        setErrorMessage({ text: "Registration successful! Please log in.", type: "success" });
-        setUsername("");
-        setPassword("");
-        setRetypePassword("");
-        navigate('/login');
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to register");
+      }
+
+      setErrorMessage({
+        text: "Registration successful! Please log in.",
+        type: "success",
+      });
+      setUsername("");
+      setPassword("");
+      setRetypePassword("");
+      navigate("/login");
     } catch (error) {
-        setErrorMessage({
-            text: error.message || "An error occurred during registration",
-            type: "error",
-        });
+      setErrorMessage({
+        text: error.message || "An error occurred during registration",
+        type: "error",
+      });
     }
-};
-
+  };
 
   return (
     <motion.div
@@ -169,8 +201,7 @@ const Form = () => {
               required
             />
           </div>
-
-          <div className="mb-2 w-full">
+          <div className="relative mb-2 w-full">
             <label
               htmlFor="password-input"
               className="mb-1 block text-sm font-medium"
@@ -179,17 +210,37 @@ const Form = () => {
             </label>
             <input
               id="password-input"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
+              className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600 pr-10"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                right: "0.5rem", 
+                top: 20,
+                bottom: 0,
+                display: "flex",
+                alignItems: "center", 
+                justifyContent: "center",
+                padding: "0 12px", 
+                cursor: "pointer",
+                backgroundColor: "transparent",
+                border: "none",
+              }}
+              className="absolute inset-y-0 right-0 px-3 flex items-center text-sm leading-5"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </button>
           </div>
-
           {isSignUp && (
-            <div className="mb-4 w-full">
+            <div className="mb-4 w-full relative">
               <label
                 htmlFor="rt-password-input"
                 className="mb-1 block text-sm font-medium"
@@ -198,13 +249,34 @@ const Form = () => {
               </label>
               <input
                 id="rt-password-input"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Re-type your password"
                 value={retypePassword}
                 onChange={(e) => setRetypePassword(e.target.value)}
-                className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600"
+                className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600 pr-10"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 px-3 flex items-center text-sm leading-5"
+                style={{
+                position: "absolute",
+                right: "0.5rem", 
+                top: 20,
+                bottom: 0,
+                display: "flex",
+                alignItems: "center", 
+                justifyContent: "center",
+                padding: "0 12px", 
+                cursor: "pointer",
+                backgroundColor: "transparent",
+                border: "none",
+              }}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
             </div>
           )}
 
