@@ -77,11 +77,21 @@ const Form = () => {
     }
   };
 
+  const isValidPassword = (password) => {
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$/;
+    return re.test(password);
+  }
+
   const handleSignup = async (e) => {
     e.preventDefault();
     if (password !== retypePassword) {
         setErrorMessage({ text: "Passwords do not match!", type: "error" });
         return;
+    }
+
+    if(!isValidPassword(password)) {
+      setErrorMessage({ text: "Password must contain at least 8 characters, including 1 uppercase, 1 lowercase, 1 number, and 1 special character.", type: "error" });
+      return;
     }
 
     const userData = {
