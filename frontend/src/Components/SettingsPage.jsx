@@ -365,7 +365,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-gray-50 px-8 sm:px-6 lg:px-8">
       <form onSubmit={handleSave} className="w-full max-w-2xl">
         <div className="space-y-12">
           <div className="text-center">
