@@ -106,6 +106,11 @@ const Form = () => {
     return re.test(password);
   };
 
+  const handlePaste = (e) => {
+    e.preventDefault();
+    setRetypePassword(retypePassword + ' ');
+  }
+
   const handleSignup = async (e) => {
     e.preventDefault();
     if (password !== retypePassword) {
@@ -253,6 +258,7 @@ const Form = () => {
                 placeholder="Re-type your password"
                 value={retypePassword}
                 onChange={(e) => setRetypePassword(e.target.value)}
+                onPaste={handlePaste} 
                 className="w-full rounded border border-slate-300 px-2.5 py-1.5 focus:outline-indigo-600 pr-10"
                 required
               />
